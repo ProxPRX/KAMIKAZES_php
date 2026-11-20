@@ -108,11 +108,7 @@ header {
     transition: background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.navbar a:hover {
-    background-color: var(--ka-orange);
-    color: var(--ka-blanc);
-}
-
+.navbar a:hover,
 .navbar a.active {
     background-color: var(--ka-rouge);
     color: var(--ka-blanc);
@@ -152,8 +148,8 @@ header {
 }
 
 .subnav a.active {
-    color: var(--ka-rouge);
-    border-bottom: 3px solid var(--ka-rouge);
+    color: var(--ka-orange);
+    border-bottom: 3px solid var(--ka-orange);
 }
 
 @media (hover: hover) {
@@ -163,7 +159,7 @@ header {
     }
 }
 
-/* --- 6. BANNIÈRE HÉROS DE BASE (BLEU #0086ff + VAGUE JAUNE #ffff01 & ROUGE #fc0000) --- */
+/* --- 6. BANNIÈRE HÉROS DE BASE (BLEU #0086ff + VAGUE ROUGE #fc0000) --- */
 .hero {
     position: relative;
     background-color: var(--ka-bleu);
@@ -185,7 +181,7 @@ header {
     background-size: 100% 100%;
     pointer-events: none;
     z-index: 10;
-    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2080'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fc0000'%20d='M0,0%20L0,40%20Q120,76%20240,44%20Q360,80%20480,42%20Q600,76%20720,44%20Q840,80%20960,42%20Q1080,76%201200,44%20Q1320,78%201440,40%20L1440,0%20Z'/%3E%3Cpath%20fill='%23ffff01'%20d='M0,0%20L0,35%20Q120,71%20240,39%20Q360,75%20480,37%20Q600,71%20720,39%20Q840,75%20960,37%20Q1080,71%201200,39%20Q1320,73%201440,35%20L1440,0%20Z'/%3E%3Cpath%20fill='%230086ff'%20d='M0,0%20L0,30%20Q120,66%20240,34%20Q360,70%20480,32%20Q600,66%20720,34%20Q840,70%20960,32%20Q1080,66%201200,34%20Q1320,68%201440,30%20L1440,0%20Z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2080'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fc0000'%20d='M0,0%20L0,38%20Q120,74%20240,42%20Q360,78%20480,40%20Q600,74%20720,42%20Q840,78%20960,40%20Q1080,74%201200,42%20Q1320,76%201440,38%20L1440,0%20Z'/%3E%3Cpath%20fill='%230086ff'%20d='M0,0%20L0,30%20Q120,66%20240,34%20Q360,70%20480,32%20Q600,66%20720,34%20Q840,70%20960,32%20Q1080,66%201200,34%20Q1320,68%201440,30%20L1440,0%20Z'/%3E%3C/svg%3E");
 }
 
 .hero h2 {
