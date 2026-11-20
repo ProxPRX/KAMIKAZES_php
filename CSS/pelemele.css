@@ -1,0 +1,151 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : GALERIE PÊLE-MÊLE PAR ANNÉE (pelemele.php)
+   ========================================================================== */
+
+/* --- 1. BANNIÈRE & EN-TÊTES DES SAISONS --- */
+.pelemele-hero {
+    padding: 60px 20px;
+}
+
+.upload-panel {
+    margin-bottom: 40px;
+}
+
+.year-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 85px;
+}
+
+.year-banner {
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+    padding: 12px 25px;
+    border-radius: 8px;
+    border-left: 6px solid var(--ka-rouge);
+    border-bottom: 3px solid var(--ka-jaune);
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.year-count {
+    font-size: 0.95rem;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--ka-blanc);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* --- 2. CARTES D'ALBUMS & GRILLE DE MINIATURES --- */
+.album-card {
+    background: var(--ka-blanc);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--ka-gris-clair);
+    margin-bottom: 30px;
+}
+
+.album-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ka-gris-clair);
+}
+
+.album-header h3 {
+    color: var(--ka-bleu);
+    font-size: 1.35rem;
+    margin: 0;
+}
+
+.album-link {
+    color: var(--ka-rouge);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.album-link:hover {
+    color: var(--ka-orange);
+    text-decoration: underline;
+}
+
+.pelemele-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.pelemele-item {
+    position: relative;
+    height: 150px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--ka-gris-back);
+    border: 1px solid var(--ka-gris-clair);
+    cursor: pointer;
+}
+
+.pelemele-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.pelemele-item:hover img {
+    transform: scale(1.06);
+}
+
+/* --- 3. OUTILS D'ADMINISTRATION SUR LES ALBUMS ET MINIATURES --- */
+.album-admin-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.input-move-year {
+    width: 85px;
+    padding: 5px 8px;
+    border: 1px solid var(--ka-gris-clair);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--ka-gris-fonce);
+}
+
+.pelemele-del-photo {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 10;
+}
+
+.pelemele-del-photo button {
+    background: var(--ka-rouge);
+    color: var(--ka-blanc);
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.pelemele-del-photo button:hover {
+    background: var(--ka-orange);
+    transform: scale(1.1);
+}
