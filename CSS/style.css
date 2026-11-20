@@ -2,20 +2,14 @@
    FEUILLE DE STYLE GLOBALE - LES KAMIKAZES AGATHOIS (CHARGÉE SUR TOUTES LES PAGES)
    ========================================================================== */
 
-/* --- 1. VARIABLES DE COULEURS DU CLUB (Noms conservés pour compatibilité globale) --- */
+/* --- 1. VARIABLES DE COULEURS DU CLUB (PALETTE KAMIKAZES AGATHOIS) --- */
 :root {
-    --smac-rouge: #fc0000;
-    --smac-rouge-fonce: #c90000;
-    --smac-bleu-fonce: #003a70;
-    --smac-noir: #222222;
-    --smac-blanc: #ffffff;
-    --smac-fond: #f8f8f8;
-    --smac-gris-bordure: #e1e1e1;
-    --smac-gris-clair: #f8f8f8;
-
-    /* Couleurs d'accent spécifiques Kamikazes Agathois */
+    --ka-blanc: #ffffff;
+    --ka-gris-back: #f8f8f8;
+    --ka-gris-clair: #e1e1e1;
+    --ka-gris-fonce: #666666;
+    --ka-rouge: #fc0000;
     --ka-bleu: #0086ff;
-    --ka-bleu-hover: #0066cc;
     --ka-jaune: #ffff01;
     --ka-orange: #ff6900;
     --ka-vert: #008001;
@@ -30,8 +24,8 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--smac-noir);
-    background-color: var(--smac-fond);
+    color: var(--ka-gris-fonce);
+    background-color: var(--ka-gris-back);
     line-height: 1.6;
 }
 
@@ -50,12 +44,12 @@ body {
 
 /* --- 3. EN-TÊTE : BANDEAU À GAUCHE & LOGO À DROITE (PROPORTIONNELS) --- */
 header {
-    background-color: var(--smac-blanc);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--ka-blanc);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 .header-banner-wrapper {
-    background-color: var(--smac-blanc);
+    background-color: var(--ka-blanc);
     width: 100%;
     margin: 0;
     padding: 0;
@@ -91,7 +85,7 @@ header {
 
 /* --- 4. BARRE DE NAVIGATION PRINCIPALE --- */
 .navbar {
-    background-color: var(--smac-bleu-fonce);
+    background-color: var(--ka-bleu);
 }
 
 .navbar ul {
@@ -106,32 +100,33 @@ header {
 .navbar a {
     display: block;
     padding: 15px 25px;
-    color: var(--smac-blanc);
+    color: var(--ka-blanc);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.95rem;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .navbar a:hover {
-    background-color: var(--ka-bleu);
-    color: var(--smac-blanc);
+    background-color: var(--ka-orange);
+    color: var(--ka-blanc);
 }
 
 .navbar a.active {
-    background-color: var(--smac-rouge);
-    color: var(--smac-blanc);
-    box-shadow: inset 0 -3px 0 var(--ka-jaune);
+    background-color: var(--ka-rouge);
+    color: var(--ka-blanc);
+    box-shadow: inset 0 -4px 0 var(--ka-jaune);
 }
 
 /* --- 5. SOUS-MENU COLLANT (PARTAGÉ PAR CLUB, MEMBRES & PÊLE-MÊLE) --- */
 .subnav {
-    background-color: var(--smac-blanc);
-    border-bottom: 1px solid var(--smac-gris-bordure);
+    background-color: var(--ka-blanc);
+    border-bottom: 2px solid var(--ka-gris-clair);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .subnav ul {
@@ -147,32 +142,32 @@ header {
 }
 
 .subnav a {
-    color: var(--smac-bleu-fonce);
+    color: var(--ka-bleu);
     text-decoration: none;
     font-weight: bold;
     font-size: 1.1rem;
     padding-bottom: 5px;
     border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 }
 
 .subnav a.active {
-    color: var(--smac-rouge);
-    border-bottom: 3px solid var(--smac-rouge);
+    color: var(--ka-rouge);
+    border-bottom: 3px solid var(--ka-rouge);
 }
 
 @media (hover: hover) {
     .subnav a:hover {
-        color: var(--ka-bleu);
-        border-bottom: 3px solid var(--ka-bleu);
+        color: var(--ka-orange);
+        border-bottom: 3px solid var(--ka-orange);
     }
 }
 
-/* --- 6. BANNIÈRE HÉROS DE BASE (COMMUNE À TOUTES LES PAGES) --- */
+/* --- 6. BANNIÈRE HÉROS DE BASE (BLEU #0086ff + VAGUE JAUNE #ffff01 & ROUGE #fc0000) --- */
 .hero {
     position: relative;
-    background-color: var(--smac-bleu-fonce);
-    color: var(--smac-blanc);
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
     text-align: center;
     padding: 60px 20px 42px 20px;
     border-bottom: none;
@@ -190,21 +185,23 @@ header {
     background-size: 100% 100%;
     pointer-events: none;
     z-index: 10;
-    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2080'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fc0000'%20d='M0,0%20L0,38%20Q120,74%20240,42%20Q360,78%20480,40%20Q600,74%20720,42%20Q840,78%20960,40%20Q1080,74%201200,42%20Q1320,76%201440,38%20L1440,0%20Z'/%3E%3Cpath%20fill='%23003a70'%20d='M0,0%20L0,30%20Q120,66%20240,34%20Q360,70%20480,32%20Q600,66%20720,34%20Q840,70%20960,32%20Q1080,66%201200,34%20Q1320,68%201440,30%20L1440,0%20Z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2080'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fc0000'%20d='M0,0%20L0,40%20Q120,76%20240,44%20Q360,80%20480,42%20Q600,76%20720,44%20Q840,80%20960,42%20Q1080,76%201200,44%20Q1320,78%201440,40%20L1440,0%20Z'/%3E%3Cpath%20fill='%23ffff01'%20d='M0,0%20L0,35%20Q120,71%20240,39%20Q360,75%20480,37%20Q600,71%20720,39%20Q840,75%20960,37%20Q1080,71%201200,39%20Q1320,73%201440,35%20L1440,0%20Z'/%3E%3Cpath%20fill='%230086ff'%20d='M0,0%20L0,30%20Q120,66%20240,34%20Q360,70%20480,32%20Q600,66%20720,34%20Q840,70%20960,32%20Q1080,66%201200,34%20Q1320,68%201440,30%20L1440,0%20Z'/%3E%3C/svg%3E");
 }
 
 .hero h2 {
     font-size: 2.5rem;
     margin-bottom: 10px;
-    color: var(--smac-blanc);
+    color: var(--ka-blanc);
     border: none;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
 .hero p {
     font-size: 1.2rem;
     margin-bottom: 20px;
     font-style: italic;
-    opacity: 0.92;
+    color: var(--ka-blanc);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
@@ -225,10 +222,10 @@ main {
 }
 
 h2 {
-    color: var(--smac-bleu-fonce);
+    color: var(--ka-bleu);
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--smac-rouge);
+    border-bottom: 3px solid var(--ka-orange);
     display: inline-block;
 }
 
@@ -236,15 +233,15 @@ h2 {
     color: var(--ka-bleu);
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s ease;
+    transition: color 0.25s ease;
 }
 
 .back-link:hover {
-    color: var(--smac-rouge);
+    color: var(--ka-orange);
 }
 
 .badge-prive {
-    color: var(--smac-rouge);
+    color: var(--ka-rouge);
     margin-left: 5px;
 }
 
@@ -256,26 +253,26 @@ h2 {
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
-    transition: 0.3s;
+    transition: background-color 0.25s ease, transform 0.2s ease;
 }
 
 .btn-primary {
-    background-color: var(--smac-rouge);
-    color: var(--smac-blanc);
+    background-color: var(--ka-rouge);
+    color: var(--ka-blanc);
 }
 
 .btn-primary:hover {
-    background-color: var(--smac-rouge-fonce);
+    background-color: var(--ka-orange);
 }
 
 .btn-secondary {
     background-color: var(--ka-bleu);
-    color: var(--smac-blanc);
+    color: var(--ka-blanc);
     margin-top: 15px;
 }
 
 .btn-secondary:hover {
-    background-color: var(--smac-bleu-fonce);
+    background-color: var(--ka-orange);
 }
 
 /* --- 9. COMPOSANTS VISUELS PARTAGÉS (CARTES D'INFO, VIDÉOS 16:9, PDF, PLACEHOLDERS) --- */
@@ -287,16 +284,16 @@ h2 {
 }
 
 .info-box {
-    background: var(--smac-blanc);
+    background: var(--ka-blanc);
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border-top: 4px solid var(--ka-bleu);
 }
 
 .info-box h3 {
     margin-bottom: 15px;
-    color: var(--smac-bleu-fonce);
+    color: var(--ka-bleu);
 }
 
 .info-box ul {
@@ -314,8 +311,8 @@ h2 {
     margin: 20px auto 0 auto;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    background-color: var(--smac-noir);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: var(--ka-gris-fonce);
 }
 
 .video-container iframe {
@@ -336,17 +333,17 @@ h2 {
 }
 
 .pdf-card {
-    background-color: var(--smac-gris-clair);
-    border: 1px solid var(--smac-gris-bordure);
+    background-color: var(--ka-gris-back);
+    border: 1px solid var(--ka-gris-clair);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
 .pdf-card-header {
     padding: 15px 20px;
-    background-color: var(--smac-blanc);
-    border-bottom: 1px solid var(--smac-gris-bordure);
+    background-color: var(--ka-blanc);
+    border-bottom: 1px solid var(--ka-gris-clair);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -356,7 +353,7 @@ h2 {
 
 .pdf-title {
     font-weight: bold;
-    color: var(--smac-bleu-fonce);
+    color: var(--ka-bleu);
     font-size: 1.08rem;
 }
 
@@ -372,7 +369,7 @@ h2 {
     width: 100%;
     height: 550px;
     border: none;
-    background-color: #525659;
+    background-color: var(--ka-gris-fonce);
 }
 
 @media (max-width: 768px) {
@@ -382,11 +379,11 @@ h2 {
 }
 
 .placeholder-img {
-    background-color: var(--smac-gris-bordure);
+    background-color: var(--ka-gris-clair);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #666666;
+    color: var(--ka-gris-fonce);
     font-weight: bold;
     text-align: center;
     padding: 10px;
@@ -413,7 +410,7 @@ h2 {
     max-width: 90%;
     max-height: 88vh;
     border-radius: 6px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     object-fit: contain;
 }
 
@@ -423,7 +420,7 @@ h2 {
     right: 30px;
     background: rgba(255, 255, 255, 0.15);
     border: none;
-    color: #ffffff;
+    color: var(--ka-blanc);
     font-size: 2rem;
     padding: 6px 15px;
     border-radius: 6px;
@@ -439,7 +436,7 @@ h2 {
     top: 50%;
     transform: translateY(-50%);
     background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
+    color: var(--ka-blanc);
     border: none;
     font-size: 2rem;
     padding: 12px 18px;
@@ -452,7 +449,7 @@ h2 {
 .lightbox-nav:hover,
 .lightbox-prev:hover,
 .lightbox-next:hover {
-    background: var(--smac-rouge);
+    background: var(--ka-rouge);
 }
 
 .lightbox-prev {
@@ -470,15 +467,15 @@ h2 {
     right: 30px;
     width: 50px;
     height: 50px;
-    background-color: var(--smac-rouge);
-    color: var(--smac-blanc);
+    background-color: var(--ka-orange);
+    color: var(--ka-blanc);
     border: none;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
@@ -493,7 +490,7 @@ h2 {
 }
 
 .back-to-top:hover {
-    background-color: var(--ka-bleu);
+    background-color: var(--ka-rouge);
     transform: translateY(-5px);
 }
 
@@ -502,23 +499,24 @@ h2 {
     height: 24px;
 }
 
-/* --- 12. PIED DE PAGE --- */
+/* --- 12. PIED DE PAGE (BLEU #0086ff + LISERÉS ROUGE #fc0000 & JAUNE #ffff01) --- */
 footer {
     text-align: center;
     padding: 40px 20px;
-    background-color: var(--smac-bleu-fonce);
-    color: var(--smac-blanc);
-    border-top: 4px solid var(--smac-rouge);
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+    border-top: 5px solid var(--ka-rouge);
+    box-shadow: inset 0 4px 0 var(--ka-jaune);
 }
 
 footer a {
     color: var(--ka-jaune);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 footer a:hover {
-    color: var(--smac-blanc);
+    color: var(--ka-blanc);
     text-decoration: underline;
 }
 
@@ -528,42 +526,42 @@ footer a:hover {
     border-radius: 8px;
     margin-bottom: 25px;
     font-weight: bold;
+    background-color: var(--ka-blanc);
 }
 
 .cms-feedback-success {
-    background-color: #e6f9ed;
-    color: #005a01;
-    border: 1px solid #86efac;
+    color: var(--ka-vert);
+    border: 1px solid var(--ka-vert);
     border-left: 5px solid var(--ka-vert);
 }
 
 .cms-feedback-error {
-    background-color: #ffe6e6;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-    border-left: 5px solid var(--smac-rouge);
+    color: var(--ka-rouge);
+    border: 1px solid var(--ka-rouge);
+    border-left: 5px solid var(--ka-rouge);
 }
 
 .cms-admin-details {
     margin-top: 15px;
     margin-bottom: 20px;
-    background: var(--smac-blanc);
+    background: var(--ka-blanc);
     border: 1px dashed var(--ka-bleu);
     border-radius: 8px;
     overflow: hidden;
 }
 
 .cms-admin-details.cms-add-block {
-    border: 2px dashed var(--smac-rouge);
-    background-color: #fffafa;
+    border: 2px dashed var(--ka-vert);
+    background-color: var(--ka-blanc);
 }
 
 .cms-admin-summary {
     padding: 10px 16px;
     font-weight: bold;
     font-size: 0.9rem;
-    color: var(--smac-bleu-fonce);
-    background-color: #eef6ff;
+    color: var(--ka-bleu);
+    background-color: var(--ka-gris-back);
+    border-bottom: 1px solid var(--ka-gris-clair);
     cursor: pointer;
     user-select: none;
     display: flex;
@@ -572,8 +570,8 @@ footer a:hover {
 }
 
 .cms-add-block .cms-admin-summary {
-    color: var(--smac-rouge);
-    background-color: #fff0f0;
+    color: var(--ka-vert);
+    background-color: var(--ka-gris-back);
 }
 
 .cms-admin-form {
@@ -594,7 +592,7 @@ footer a:hover {
     display: block;
     font-weight: bold;
     font-size: 0.88rem;
-    color: var(--smac-bleu-fonce);
+    color: var(--ka-bleu);
     margin-bottom: 5px;
 }
 
@@ -605,17 +603,18 @@ footer a:hover {
 .cms-field select {
     width: 100%;
     padding: 9px 12px;
-    border: 1px solid var(--smac-gris-bordure);
+    border: 1px solid var(--ka-gris-clair);
     border-radius: 5px;
     font-family: inherit;
     font-size: 0.94rem;
-    background-color: var(--smac-gris-clair);
+    color: var(--ka-gris-fonce);
+    background-color: var(--ka-gris-back);
 }
 
 .cms-field input[type="file"] {
     width: 100%;
     padding: 8px;
-    background-color: var(--smac-gris-clair);
+    background-color: var(--ka-gris-back);
     border: 1px dashed var(--ka-bleu);
     border-radius: 5px;
     font-size: 0.88rem;
@@ -624,7 +623,7 @@ footer a:hover {
 .cms-help {
     display: block;
     font-size: 0.8rem;
-    color: #666666;
+    color: var(--ka-gris-fonce);
     margin-top: 4px;
 }
 
@@ -637,31 +636,33 @@ footer a:hover {
 }
 
 .btn-cms-save {
-    background-color: var(--ka-bleu);
-    color: var(--smac-blanc);
+    background-color: var(--ka-vert);
+    color: var(--ka-blanc);
     border: none;
     padding: 9px 18px;
     border-radius: 5px;
     font-weight: bold;
     font-size: 0.9rem;
     cursor: pointer;
+    transition: background-color 0.25s ease;
 }
 
 .btn-cms-save:hover {
-    background-color: var(--smac-bleu-fonce);
+    background-color: var(--ka-bleu);
 }
 
 .btn-cms-delete {
-    background-color: var(--smac-rouge);
-    color: var(--smac-blanc);
+    background-color: var(--ka-rouge);
+    color: var(--ka-blanc);
     border: none;
     padding: 9px 16px;
     border-radius: 5px;
     font-weight: bold;
     font-size: 0.88rem;
     cursor: pointer;
+    transition: background-color 0.25s ease;
 }
 
 .btn-cms-delete:hover {
-    background-color: var(--smac-rouge-fonce);
+    background-color: var(--ka-orange);
 }
