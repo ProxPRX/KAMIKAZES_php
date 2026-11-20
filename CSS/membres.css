@@ -1,0 +1,647 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : PAGE MEMBRES, CARTE, TROMBI & PUBLICATIONS (membres.php)
+   ========================================================================== */
+
+/* --- 1. BANNIÈRE & SECTIONS --- */
+.membres-hero {
+    padding: 60px 20px;
+}
+
+.membres-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 80px;
+}
+
+.section-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+/* --- 2. BANDEAUX PLIABLES DES COMPTES RENDUS & LISEUSE LECTURE SEULE --- */
+.cr-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.cr-accordion-item {
+    background-color: var(--ka-blanc);
+    border: 1px solid var(--ka-gris-clair);
+    border-left: 5px solid var(--ka-bleu);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: border-left-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cr-accordion-item:hover,
+.cr-accordion-item.open {
+    border-left-color: var(--ka-orange);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.cr-accordion-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.cr-accordion-header:hover {
+    background-color: var(--ka-gris-back);
+}
+
+.cr-accordion-item.open .cr-accordion-header {
+    border-bottom: 1px solid var(--ka-gris-clair);
+    border-radius: 8px 8px 0 0;
+    background-color: var(--ka-gris-back);
+}
+
+.cr-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.cr-title {
+    font-weight: bold;
+    color: var(--ka-bleu);
+    font-size: 1.08rem;
+}
+
+.cr-date {
+    font-size: 0.85rem;
+    color: var(--ka-gris-fonce);
+}
+
+.cr-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cr-toggle-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--ka-gris-back);
+    color: var(--ka-bleu);
+    border: 1px solid var(--ka-bleu);
+    padding: 6px 13px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cr-accordion-item.open .cr-toggle-badge {
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+    border-color: var(--ka-bleu);
+}
+
+.cr-chevron {
+    font-size: 0.75rem;
+    transition: transform 0.25s ease;
+}
+
+.cr-accordion-item.open .cr-chevron {
+    transform: rotate(180deg);
+}
+
+.cr-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cr-accordion-body {
+    display: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+
+.cr-accordion-item.open .cr-accordion-body {
+    display: block;
+}
+
+/* Liseuse PDF en lecture seule (Canvas pour les adhérents) */
+.cr-readonly-viewer {
+    background-color: var(--ka-gris-fonce);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.cr-readonly-topbar {
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cr-canvas-pages {
+    max-height: 680px;
+    overflow-y: auto;
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.cr-canvas-pages canvas {
+    max-width: 100%;
+    height: auto !important;
+    background: var(--ka-blanc);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.cr-loading-msg {
+    color: var(--ka-blanc);
+    font-weight: bold;
+    padding: 30px 15px;
+    text-align: center;
+}
+
+/* Bloque l'impression de la liseuse lecture seule depuis le menu du navigateur */
+@media print {
+    .cr-readonly-viewer {
+        display: none !important;
+    }
+    .cr-accordion-item.open .cr-accordion-body::after {
+        content: "🔒 Document confidentiel Les Kamikazes Agathois — Impression réservée aux administrateurs.";
+        display: block;
+        padding: 30px;
+        text-align: center;
+        font-weight: bold;
+        color: #666666;
+    }
+}
+
+/* --- 3. GRILLE DE VIGNETTES (COMME SUR LA PAGE ACTUALITÉS) --- */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.news-card {
+    background: var(--ka-blanc);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid var(--ka-gris-clair);
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--ka-bleu);
+}
+
+.news-card-pending {
+    border: 2px dashed var(--ka-orange);
+    background-color: var(--ka-blanc);
+}
+
+.news-image {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    display: block;
+}
+
+.news-image.placeholder-img {
+    height: 210px;
+}
+
+.news-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.news-date {
+    display: block;
+    color: var(--ka-rouge);
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.badge-attente-carte {
+    display: inline-block;
+    background-color: var(--ka-orange);
+    color: var(--ka-blanc);
+    border: 1px solid var(--ka-orange);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-left: 6px;
+}
+
+.news-content h3 {
+    color: var(--ka-bleu);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.news-content p {
+    color: var(--ka-gris-fonce);
+    line-height: 1.55;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.read-more {
+    display: inline-block;
+    margin-top: auto;
+    color: var(--ka-bleu);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.read-more:hover {
+    color: var(--ka-orange);
+}
+
+/* --- 4. PAGE DE LECTURE COMPLÈTE D'UNE PUBLICATION (membres.php?pub=ID) --- */
+.pub-moderation-bar {
+    background: var(--ka-blanc);
+    border: 1px solid var(--ka-gris-clair);
+    border-left: 5px solid var(--ka-bleu);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.pub-moderation-bar.is-pending {
+    background-color: var(--ka-blanc);
+    color: var(--ka-orange);
+    border-color: var(--ka-orange);
+    border-left-width: 5px;
+}
+
+.pub-detail-box {
+    background: var(--ka-blanc);
+    padding: 35px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--ka-gris-clair);
+    border-top: 4px solid var(--ka-bleu);
+}
+
+.pub-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    color: var(--ka-gris-fonce);
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+}
+
+.pub-detail-box h1 {
+    color: var(--ka-bleu);
+    font-size: 1.9rem;
+    margin-bottom: 25px;
+}
+
+.pub-main-img-wrapper {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.pub-main-img {
+    max-width: 100%;
+    max-height: 520px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    object-fit: contain;
+}
+
+.pub-detail-content {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--ka-gris-fonce);
+    margin-bottom: 30px;
+}
+
+.pub-detail-section {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid var(--ka-gris-clair);
+}
+
+.pub-detail-section h3 {
+    color: var(--ka-bleu);
+    margin-bottom: 18px;
+}
+
+.pending-pub-banner {
+    background-color: var(--ka-blanc);
+    color: var(--ka-orange);
+    border: 1px solid var(--ka-orange);
+    border-left: 5px solid var(--ka-orange);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.pub-admin-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-pub-action {
+    padding: 7px 14px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-pub-validate {
+    background-color: var(--ka-vert);
+    color: var(--ka-blanc);
+}
+
+.btn-pub-edit {
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+}
+
+.btn-pub-delete {
+    background-color: var(--ka-rouge);
+    color: var(--ka-blanc);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 15px;
+}
+
+.gallery-item {
+    background-color: var(--ka-gris-clair);
+    border-radius: 6px;
+    overflow: hidden;
+    height: 210px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* --- 5. ENCADRÉ PRIVÉ "MA CARTE D'ADHÉRENT" (MEMBRES CONNECTÉS) --- */
+.member-card-box {
+    background: var(--ka-blanc);
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--ka-gris-clair);
+    border-left: 5px solid var(--ka-bleu);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.member-card-box-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.member-card-avatar {
+    width: 80px !important;
+    height: 100px !important;
+    min-width: 80px;
+    max-width: 80px;
+    min-height: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 6px;
+    border: 2px solid var(--ka-bleu);
+    flex-shrink: 0;
+    display: block;
+}
+
+.member-card-summary h3 {
+    color: var(--ka-bleu);
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+}
+
+.member-card-summary ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--ka-gris-fonce);
+    line-height: 1.6;
+}
+
+/* --- 6. GRILLE DU TROMBINOSCOPE (TAILLE D'IMAGE FIXE + NOM/PRÉNOM DESSOUS) --- */
+.trombi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    align-items: stretch;
+}
+
+.trombi-card {
+    background: var(--ka-blanc);
+    border: 1px solid var(--ka-gris-clair);
+    border-top: 4px solid var(--ka-bleu);
+    border-radius: 8px;
+    padding: 20px 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.2s ease, border-top-color 0.2s ease;
+}
+
+.trombi-card:hover {
+    transform: translateY(-4px);
+    border-top-color: var(--ka-rouge);
+}
+
+.trombi-photo-wrapper {
+    width: 140px;
+    height: 175px;
+    min-width: 140px;
+    max-width: 140px;
+    min-height: 175px;
+    max-height: 175px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--ka-bleu);
+    background-color: var(--ka-gris-back);
+    margin: 0 auto 14px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.trombi-photo {
+    width: 140px !important;
+    height: 175px !important;
+    max-width: 140px !important;
+    max-height: 175px !important;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+}
+
+.trombi-initials {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--ka-bleu);
+    letter-spacing: 1px;
+}
+
+.trombi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    line-height: 1.3;
+}
+
+.trombi-nom {
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--ka-bleu);
+    text-transform: uppercase;
+    word-break: break-word;
+}
+
+.trombi-prenom {
+    font-size: 0.95rem;
+    color: var(--ka-gris-fonce);
+    word-break: break-word;
+}
+
+/* --- 7. ADAPTATION RESPONSIVE (TABLETTES & TÉLÉPHONES) --- */
+@media (max-width: 900px) {
+    .trombi-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .cr-accordion-header,
+    .member-card-box,
+    .section-header-flex,
+    .pub-moderation-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .member-card-box-action,
+    .member-card-box-action .btn-primary,
+    .section-header-flex .btn-primary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .cr-canvas-pages {
+        max-height: 500px;
+        padding: 12px 6px;
+    }
+
+    .pub-detail-box {
+        padding: 20px 15px;
+    }
+
+    .trombi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .trombi-card {
+        padding: 15px 10px;
+    }
+
+    .trombi-photo-wrapper,
+    .trombi-photo {
+        width: 120px !important;
+        height: 150px !important;
+        min-width: 120px;
+        max-width: 120px !important;
+        min-height: 150px;
+        max-height: 150px !important;
+    }
+
+    .trombi-nom {
+        font-size: 0.92rem;
+    }
+
+    .trombi-prenom {
+        font-size: 0.88rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .trombi-grid {
+        grid-template-columns: 1fr;
+    }
+}
