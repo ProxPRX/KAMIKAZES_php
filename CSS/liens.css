@@ -22,11 +22,11 @@
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--ka-gris-clair);
-    border-top: 4px solid var(--ka-rouge);
+    border-top: 4px solid var(--ka-bleu);
 }
 
 .link-category:nth-child(even) {
-    border-top-color: var(--ka-orange);
+    border-top-color: var(--ka-jaune);
 }
 
 .link-category:nth-child(3n) {
@@ -37,7 +37,7 @@
     color: var(--ka-bleu);
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--ka-gris-clair);
+    border-bottom: 2px solid var(--ka-orange);
 }
 
 .styled-link-list {
@@ -63,12 +63,14 @@
     font-weight: bold;
     text-decoration: none;
     margin-bottom: 5px;
-    transition: color 0.25s ease;
+    padding-bottom: 2px;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.25s ease;
 }
 
 .styled-link-list a:hover {
-    color: var(--ka-orange);
-    text-decoration: underline;
+    color: var(--ka-bleu);
+    border-bottom-color: var(--ka-orange);
 }
 
 .styled-link-list p {
