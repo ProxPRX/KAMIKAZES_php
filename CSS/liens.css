@@ -1,0 +1,78 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : PAGE LIENS UTILES & PARTENAIRES (liens.php)
+   ========================================================================== */
+
+.liens-hero {
+    padding: 60px 20px;
+}
+
+.links-section {
+    margin-bottom: 60px;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+}
+
+.link-category {
+    background: var(--ka-blanc);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--ka-gris-clair);
+    border-top: 4px solid var(--ka-rouge);
+}
+
+.link-category:nth-child(even) {
+    border-top-color: var(--ka-orange);
+}
+
+.link-category:nth-child(3n) {
+    border-top-color: var(--ka-vert);
+}
+
+.link-category h3 {
+    color: var(--ka-bleu);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ka-gris-clair);
+}
+
+.styled-link-list {
+    list-style: none;
+}
+
+.styled-link-list li {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--ka-gris-clair);
+}
+
+.styled-link-list li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.styled-link-list a {
+    display: inline-block;
+    font-size: 1.1rem;
+    color: var(--ka-bleu);
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 5px;
+    transition: color 0.25s ease;
+}
+
+.styled-link-list a:hover {
+    color: var(--ka-orange);
+    text-decoration: underline;
+}
+
+.styled-link-list p {
+    color: var(--ka-gris-fonce);
+    font-size: 0.95rem;
+    margin: 0;
+}
