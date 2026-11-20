@@ -23,7 +23,7 @@ $roleAffiche       = strtoupper(str_replace('_', ' ', (string)$role));
     <div class="header-banner-wrapper">
         <a href="index.php" class="header-logos-link">
             <img src="IMG/kamikazes_bandeau.png" alt="Les Kamikazes Agathois - Club d'Aéromodélisme à Agde" class="banner-main-img">
-            <img src="IMG/Logo_Kamikazes.png" alt="Logo Les Kamikazes Agathois" class="club-logo-side">
+            <img src="IMG/Logo_Kamikazes_Header.png" alt="Logo Les Kamikazes Agathois" class="club-logo-side">
         </a>
     </div>
 
