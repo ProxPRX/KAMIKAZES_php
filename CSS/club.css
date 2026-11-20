@@ -1,0 +1,87 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : PAGE LE CLUB & ADHÉSION YAPLA (club.php)
+   ========================================================================== */
+
+/* --- 1. BANNIÈRE & SECTIONS DE PRÉSENTATION DU CLUB --- */
+.club-hero {
+    padding: 60px 20px;
+}
+
+.club-section {
+    margin-bottom: 60px;
+    scroll-margin-top: 80px; /* Compense la hauteur du sous-menu collant lors du clic sur une ancre */
+}
+
+.club-section h3.subtitle {
+    margin-top: 20px;
+    color: var(--ka-bleu);
+}
+
+.club-list {
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.info-box-title-red {
+    color: var(--ka-rouge) !important;
+}
+
+/* --- 2. SECTION INSCRIPTION & TARIFS --- */
+.join-us {
+    background-color: var(--ka-blanc);
+    padding: 40px;
+    border-radius: 8px;
+    border: 2px solid var(--ka-rouge);
+    border-top: 5px solid var(--ka-orange);
+    margin-bottom: 60px;
+}
+
+.join-us h2 {
+    border-bottom: none;
+    margin-bottom: 10px;
+}
+
+.join-us-action {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.join-us-action .btn-primary {
+    font-size: 1.1rem;
+    padding: 15px 30px;
+}
+
+.join-us-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+/* --- 3. CONTENEUR RESPONSIVE DE L'IFRAME YAPLA --- */
+.yapla-iframe-wrapper {
+    width: 100%;
+    max-width: 950px;
+    margin: 30px auto 15px auto;
+    background: var(--ka-blanc);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--ka-gris-clair);
+}
+
+.yapla-iframe-wrapper iframe {
+    display: block;
+    width: 100%;
+    height: 800px;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .join-us {
+        padding: 20px 12px;
+    }
+    .yapla-iframe-wrapper iframe {
+        height: 850px;
+    }
+}
