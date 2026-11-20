@@ -219,7 +219,7 @@ h2 {
     color: var(--ka-bleu);
     margin-bottom: 20px;
     padding-bottom: 8px;
-    border-bottom: 4px solid var(--ka-jaune);
+    border-bottom: 3px solid var(--ka-orange);
     display: inline-block;
 }
 
@@ -234,7 +234,7 @@ h2 {
 
 .back-link:hover {
     color: var(--ka-bleu);
-    border-bottom-color: var(--ka-jaune);
+    border-bottom-color: var(--ka-orange);
 }
 
 .badge-prive {
