@@ -206,7 +206,7 @@ if ($estAdminOuBureau) {
                 <a href="club.php#inscription" class="btn-primary"><?= htmlspecialchars($accueilData['hero_bouton_texte']) ?></a>
             </div>
 
-            <img src="IMG/logo_agde.png" alt="Logo Ville d'Agde" class="hero-logo hero-logo-right">
+            <img src="IMG/LOGO_FFAM_CB.png" alt="Logo Ville d'Agde" class="hero-logo hero-logo-right">
         </div>
     </section>
 
