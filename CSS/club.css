@@ -9,7 +9,7 @@
 
 .club-section {
     margin-bottom: 60px;
-    scroll-margin-top: 80px; /* Compense la hauteur du sous-menu collant lors du clic sur une ancre */
+    scroll-margin-top: 80px;
 }
 
 .club-section h3.subtitle {
@@ -24,7 +24,10 @@
 }
 
 .info-box-title-red {
-    color: var(--ka-rouge) !important;
+    color: var(--ka-bleu) !important;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--ka-orange);
+    display: inline-block;
 }
 
 /* --- 2. SECTION INSCRIPTION & TARIFS --- */
@@ -32,14 +35,14 @@
     background-color: var(--ka-blanc);
     padding: 40px;
     border-radius: 8px;
-    border: 2px solid var(--ka-rouge);
-    border-top: 5px solid var(--ka-orange);
+    border: 2px solid var(--ka-bleu);
+    border-top: 5px solid var(--ka-jaune);
     margin-bottom: 60px;
 }
 
 .join-us h2 {
-    border-bottom: none;
-    margin-bottom: 10px;
+    border-bottom: 3px solid var(--ka-orange);
+    margin-bottom: 15px;
 }
 
 .join-us-action {
