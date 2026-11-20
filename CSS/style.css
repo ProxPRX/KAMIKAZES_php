@@ -29,7 +29,6 @@ body {
     line-height: 1.6;
 }
 
-/* Classe d'accessibilité pour masquer un texte visuellement tout en le gardant lisible par les moteurs */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -56,7 +55,6 @@ header {
     overflow: hidden;
 }
 
-/* La hauteur diminue proportionnellement à la largeur d'écran pour éviter toute bande vide */
 .header-logos-link {
     display: flex;
     align-items: center;
@@ -220,8 +218,8 @@ main {
 h2 {
     color: var(--ka-bleu);
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 3px solid var(--ka-orange);
+    padding-bottom: 8px;
+    border-bottom: 4px solid var(--ka-jaune);
     display: inline-block;
 }
 
@@ -229,11 +227,14 @@ h2 {
     color: var(--ka-bleu);
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.25s ease;
+    padding-bottom: 2px;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.25s ease;
 }
 
 .back-link:hover {
-    color: var(--ka-orange);
+    color: var(--ka-bleu);
+    border-bottom-color: var(--ka-jaune);
 }
 
 .badge-prive {
@@ -249,7 +250,7 @@ h2 {
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.25s ease, transform 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .btn-primary {
@@ -258,7 +259,8 @@ h2 {
 }
 
 .btn-primary:hover {
-    background-color: var(--ka-orange);
+    background-color: var(--ka-rouge);
+    box-shadow: inset 0 -4px 0 var(--ka-jaune);
 }
 
 .btn-secondary {
@@ -268,7 +270,9 @@ h2 {
 }
 
 .btn-secondary:hover {
-    background-color: var(--ka-orange);
+    background-color: var(--ka-jaune);
+    color: var(--ka-bleu);
+    box-shadow: inset 0 0 0 2px var(--ka-bleu);
 }
 
 /* --- 9. COMPOSANTS VISUELS PARTAGÉS (CARTES D'INFO, VIDÉOS 16:9, PDF, PLACEHOLDERS) --- */
@@ -463,7 +467,7 @@ h2 {
     right: 30px;
     width: 50px;
     height: 50px;
-    background-color: var(--ka-orange);
+    background-color: var(--ka-bleu);
     color: var(--ka-blanc);
     border: none;
     border-radius: 50%;
@@ -486,7 +490,9 @@ h2 {
 }
 
 .back-to-top:hover {
-    background-color: var(--ka-rouge);
+    background-color: var(--ka-jaune);
+    color: var(--ka-bleu);
+    box-shadow: inset 0 0 0 2px var(--ka-bleu), 0 4px 15px rgba(0, 0, 0, 0.2);
     transform: translateY(-5px);
 }
 
@@ -495,14 +501,13 @@ h2 {
     height: 24px;
 }
 
-/* --- 12. PIED DE PAGE (BLEU #0086ff + LISERÉS ROUGE #fc0000 & JAUNE #ffff01) --- */
+/* --- 12. PIED DE PAGE (BLEU #0086ff + LISERÉ JAUNE #ffff01) --- */
 footer {
     text-align: center;
     padding: 40px 20px;
     background-color: var(--ka-bleu);
     color: var(--ka-blanc);
-    border-top: 5px solid var(--ka-rouge);
-    box-shadow: inset 0 4px 0 var(--ka-jaune);
+    border-top: 5px solid var(--ka-jaune);
 }
 
 footer a {
@@ -640,7 +645,7 @@ footer a:hover {
     font-weight: bold;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.25s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .btn-cms-save:hover {
@@ -656,9 +661,10 @@ footer a:hover {
     font-weight: bold;
     font-size: 0.88rem;
     cursor: pointer;
-    transition: background-color 0.25s ease;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .btn-cms-delete:hover {
-    background-color: var(--ka-orange);
+    background-color: var(--ka-rouge);
+    box-shadow: inset 0 -3px 0 var(--ka-jaune);
 }
