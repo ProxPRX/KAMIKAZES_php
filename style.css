@@ -1,0 +1,606 @@
+/* ==========================================================================
+   FEUILLE DE STYLE GLOBALE - LES KAMIKAZES AGATHOIS (CHARGÉE SUR TOUTES LES PAGES)
+   ========================================================================== */
+
+/* --- 1. VARIABLES DE COULEURS DU CLUB (Noms conservés pour compatibilité globale) --- */
+:root {
+    --smac-rouge: #fc0000;
+    --smac-rouge-fonce: #c90000;
+    --smac-bleu-fonce: #003a70;
+    --smac-noir: #222222;
+    --smac-blanc: #ffffff;
+    --smac-fond: #f8f8f8;
+    --smac-gris-bordure: #e1e1e1;
+    --smac-gris-clair: #f8f8f8;
+
+    /* Couleurs d'accent spécifiques Kamikazes Agathois */
+    --ka-bleu: #0086ff;
+    --ka-bleu-hover: #0066cc;
+    --ka-jaune: #ffff01;
+    --ka-orange: #ff6900;
+    --ka-vert: #008001;
+}
+
+/* --- 2. RÉINITIALISATION DES MARGES & TYPOGRAPHIE DE BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--smac-noir);
+    background-color: var(--smac-fond);
+    line-height: 1.6;
+}
+
+/* Classe d'accessibilité pour masquer un texte visuellement tout en le gardant lisible par les moteurs */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* --- 3. EN-TÊTE : BANDEAU À GAUCHE & LOGO À DROITE (PROPORTIONNELS) --- */
+header {
+    background-color: var(--smac-blanc);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-banner-wrapper {
+    background-color: var(--smac-blanc);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* La hauteur diminue proportionnellement à la largeur d'écran pour éviter toute bande vide */
+.header-logos-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: min(145px, calc((100vw - 25px) * 145 / 980));
+    width: 100%;
+    text-decoration: none;
+    margin: 0;
+    padding-right: 2%;
+}
+
+.banner-main-img,
+.club-logo-side {
+    height: 100%;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .header-logos-link {
+        height: min(145px, calc((100vw - 15px) * 145 / 980));
+        padding-right: 15px;
+    }
+}
+
+/* --- 4. BARRE DE NAVIGATION PRINCIPALE --- */
+.navbar {
+    background-color: var(--smac-bleu-fonce);
+}
+
+.navbar ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar a {
+    display: block;
+    padding: 15px 25px;
+    color: var(--smac-blanc);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar a:hover {
+    background-color: var(--ka-bleu);
+    color: var(--smac-blanc);
+}
+
+.navbar a.active {
+    background-color: var(--smac-rouge);
+    color: var(--smac-blanc);
+    box-shadow: inset 0 -3px 0 var(--ka-jaune);
+}
+
+/* --- 5. SOUS-MENU COLLANT (PARTAGÉ PAR CLUB, MEMBRES & PÊLE-MÊLE) --- */
+.subnav {
+    background-color: var(--smac-blanc);
+    border-bottom: 1px solid var(--smac-gris-bordure);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.subnav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 15px 0;
+}
+
+.subnav li {
+    margin: 0 15px;
+}
+
+.subnav a {
+    color: var(--smac-bleu-fonce);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding-bottom: 5px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.subnav a.active {
+    color: var(--smac-rouge);
+    border-bottom: 3px solid var(--smac-rouge);
+}
+
+@media (hover: hover) {
+    .subnav a:hover {
+        color: var(--ka-bleu);
+        border-bottom: 3px solid var(--ka-bleu);
+    }
+}
+
+/* --- 6. BANNIÈRE HÉROS DE BASE (COMMUNE À TOUTES LES PAGES) --- */
+.hero {
+    position: relative;
+    background-color: var(--smac-bleu-fonce);
+    color: var(--smac-blanc);
+    text-align: center;
+    padding: 60px 20px 42px 20px;
+    border-bottom: none;
+    margin-bottom: 58px;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -57px;
+    width: 100%;
+    height: 58px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    pointer-events: none;
+    z-index: 10;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%2080'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fc0000'%20d='M0,0%20L0,38%20Q120,74%20240,42%20Q360,78%20480,40%20Q600,74%20720,42%20Q840,78%20960,40%20Q1080,74%201200,42%20Q1320,76%201440,38%20L1440,0%20Z'/%3E%3Cpath%20fill='%23003a70'%20d='M0,0%20L0,30%20Q120,66%20240,34%20Q360,70%20480,32%20Q600,66%20720,34%20Q840,70%20960,32%20Q1080,66%201200,34%20Q1320,68%201440,30%20L1440,0%20Z'/%3E%3C/svg%3E");
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--smac-blanc);
+    border: none;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-style: italic;
+    opacity: 0.92;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        margin-bottom: 42px;
+    }
+    .hero::after {
+        height: 42px;
+        bottom: -41px;
+    }
+}
+
+/* --- 7. STRUCTURE PRINCIPALE & ÉLÉMENTS DE TEXTE PARTAGÉS --- */
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h2 {
+    color: var(--smac-bleu-fonce);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--smac-rouge);
+    display: inline-block;
+}
+
+.back-link {
+    color: var(--ka-bleu);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--smac-rouge);
+}
+
+.badge-prive {
+    color: var(--smac-rouge);
+    margin-left: 5px;
+}
+
+/* --- 8. BOUTONS PRINCIPAUX ET SECONDAIRES --- */
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--smac-rouge);
+    color: var(--smac-blanc);
+}
+
+.btn-primary:hover {
+    background-color: var(--smac-rouge-fonce);
+}
+
+.btn-secondary {
+    background-color: var(--ka-bleu);
+    color: var(--smac-blanc);
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    background-color: var(--smac-bleu-fonce);
+}
+
+/* --- 9. COMPOSANTS VISUELS PARTAGÉS (CARTES D'INFO, VIDÉOS 16:9, PDF, PLACEHOLDERS) --- */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.info-box {
+    background: var(--smac-blanc);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-top: 4px solid var(--ka-bleu);
+}
+
+.info-box h3 {
+    margin-bottom: 15px;
+    color: var(--smac-bleu-fonce);
+}
+
+.info-box ul {
+    margin-top: 15px;
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    padding-bottom: 56.25%;
+    height: 0;
+    margin: 20px auto 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background-color: var(--smac-noir);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 8px;
+}
+
+.pdf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 10px;
+}
+
+.pdf-card {
+    background-color: var(--smac-gris-clair);
+    border: 1px solid var(--smac-gris-bordure);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.pdf-card-header {
+    padding: 15px 20px;
+    background-color: var(--smac-blanc);
+    border-bottom: 1px solid var(--smac-gris-bordure);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.pdf-title {
+    font-weight: bold;
+    color: var(--smac-bleu-fonce);
+    font-size: 1.08rem;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pdf-viewer {
+    display: block;
+    width: 100%;
+    height: 550px;
+    border: none;
+    background-color: #525659;
+}
+
+@media (max-width: 768px) {
+    .pdf-viewer {
+        height: 420px;
+    }
+}
+
+.placeholder-img {
+    background-color: var(--smac-gris-bordure);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666666;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}
+
+/* --- 10. VISIONNEUSE PLEIN ÉCRAN UNIVERSELLE (LIGHTBOX) --- */
+.lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.lightbox-overlay.active {
+    display: flex;
+}
+
+#lightbox-img,
+.lightbox-img {
+    max-width: 90%;
+    max-height: 88vh;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    object-fit: contain;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    font-size: 2rem;
+    padding: 6px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.2s ease;
+}
+
+.lightbox-nav,
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: none;
+    font-size: 2rem;
+    padding: 12px 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-nav:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background: var(--smac-rouge);
+}
+
+.lightbox-prev {
+    left: 25px;
+}
+
+.lightbox-next {
+    right: 25px;
+}
+
+/* --- 11. BOUTON FLOTTANT "RETOUR EN HAUT" --- */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--smac-rouge);
+    color: var(--smac-blanc);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background-color: var(--ka-bleu);
+    transform: translateY(-5px);
+}
+
+.back-to-top svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* --- 12. PIED DE PAGE --- */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: var(--smac-bleu-fonce);
+    color: var(--smac-blanc);
+    border-top: 4px solid var(--smac-rouge);
+}
+
+footer a {
+    color: var(--ka-jaune);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+footer a:hover {
+    color: var(--smac-blanc);
+    text-decoration: underline;
+}
+
+/* --- 13. PANNEAUX D'ÉDITION RAPIDE SANS CODE (VISIBLES UNIQUEMENT PAR L'ADMIN) --- */
+.cms-feedback {
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.cms-feedback-success {
+    background-color: #e6f9ed;
+    color: #005a01;
+    border: 1px solid #86efac;
+    border-left: 5px solid var(--ka-vert);
+}
+
+.cms-feedback-error {
+    background-color: #ffe6e6;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    border-left: 5px solid var(--smac-rouge);
+}
+
+.cms-admin-details {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background: var(--smac-blanc);
+    border: 1px dashed var(--ka-bleu);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cms-admin-details.cms-add-block {
+    border: 2px dashed var(--smac-rouge);
+    background-color: #fffafa;
+}
+
+.cms-admin-summary {
+    padding: 10px 16px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--smac-bleu-fonce);
+    background-color: #eef6ff;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cms-add-block .cms-admin-summary {
+    color: var(--smac-rouge);
+    background-color: #fff0f0;
+}
+
+.cms-admin-form {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.cms-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.cms-field label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.88rem;
+    color: var(--smac-bleu-fonce);
+    margin-bottom: 5px;
+}
+
+.cms-field input[type="text"],
+.cms-field input[type="url"],
+.cms-field input[type="email"],
+.cms-field textarea,
+.cms-field select {
+    width: 10
