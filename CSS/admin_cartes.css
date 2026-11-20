@@ -1,0 +1,473 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : GÉNÉRATEUR DE CARTES D'ADHÉRENTS (admin_cartes.php)
+   Les Kamikazes Agathois — Format carte imprimable
+   ========================================================================== */
+
+/* --- 1. RÉINITIALISATION & VERROUILLAGE DES TAILLES DE TEXTE SUR MOBILE/PDF --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+html,
+body {
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f8f8;
+    color: #666666;
+    padding: 20px;
+}
+
+/* --- 2. BARRE D'OUTILS SUPÉRIEURE (MASQUÉE AUTOMATIQUEMENT SUR LE PDF) --- */
+.toolbar-no-print {
+    max-width: 960px;
+    margin: 0 auto 25px auto;
+    background: #ffffff;
+    border-top: 5px solid #fc0000;
+    border-radius: 8px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.toolbar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.toolbar-top h1 {
+    font-size: 1.35rem;
+    color: #0086ff;
+}
+
+.toolbar-subtitle {
+    font-size: 0.85rem;
+    color: #666666;
+    margin-top: 4px;
+}
+
+.toolbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.toolbar-controls label {
+    font-weight: bold;
+    color: #0086ff;
+    font-size: 0.95rem;
+}
+
+.toolbar-controls input[type="text"] {
+    width: 85px;
+    padding: 7px 10px;
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    color: #666666;
+}
+
+.btn-print {
+    background-color: #fc0000;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-print:hover {
+    background-color: #ff6900;
+}
+
+.btn-secondary-bar {
+    background-color: #0086ff;
+    color: #ffffff;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary-bar:hover {
+    background-color: #ff6900;
+}
+
+.toolbar-error {
+    background: #ffffff;
+    color: #fc0000;
+    border: 1px solid #fc0000;
+    border-left: 4px solid #fc0000;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.selector-title {
+    font-size: 0.88rem;
+    color: #0086ff;
+}
+
+.selector-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.members-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 8px;
+    background: #f8f8f8;
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+}
+
+.member-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e1e1e1;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+/* --- 3. PLANCHE ET DIMENSIONS VERROUILLÉES D'UNE CARTE D'ADHÉRENT --- */
+.sheets-container {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+}
+
+.member-card-row {
+    display: flex;
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 1px dashed #666666;
+    width: 174mm;
+    min-width: 174mm;
+    max-width: 174mm;
+    height: 55mm;
+    min-height: 55mm;
+    max-height: 55mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.member-card-row.hidden-card {
+    display: none !important;
+}
+
+/* --- 4. VOLET GAUCHE DE LA CARTE (106mm FIXE) --- */
+.card-left {
+    width: 106mm;
+    min-width: 106mm;
+    max-width: 106mm;
+    height: 100%;
+    flex-shrink: 0;
+    border: 1.5px solid #666666;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.card-left-body {
+    padding: 2.2mm 2.5mm 1.2mm 2.5mm;
+    display: grid;
+    grid-template-columns: 19.5mm 56.5mm 21.2mm;
+    gap: 1.5mm;
+    flex: 1;
+    align-items: start;
+}
+
+.col-logo-name {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-width: 0;
+}
+
+.card-club-logo {
+    width: 19mm;
+    height: 19mm;
+    object-fit: contain;
+    display: block;
+}
+
+.card-member-names {
+    margin-top: auto;
+    padding-bottom: 0.5mm;
+    line-height: 1.18;
+    width: 76mm;
+    position: relative;
+    z-index: 2;
+}
+
+.card-prenom {
+    font-size: 8.2pt;
+    font-weight: bold;
+    color: #666666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-nom {
+    font-size: 8.5pt;
+    font-weight: bold;
+    color: #000000;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.col-club-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7mm;
+    padding-left: 0.5mm;
+    min-width: 0;
+}
+
+.txt-saison {
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #0086ff;
+    text-align: center;
+    margin-bottom: 0.4mm;
+    white-space: nowrap;
+}
+
+.txt-club-full {
+    font-size: 7pt;
+    font-weight: bold;
+    color: #666666;
+    line-height: 1.15;
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+}
+
+.txt-affiliation {
+    font-size: 7.5pt;
+    color: #666666;
+    white-space: nowrap;
+}
+
+.txt-smac-red {
+    font-size: 10pt;
+    font-weight: bold;
+    color: #fc0000;
+    margin-top: 0.4mm;
+    white-space: nowrap;
+}
+
+.txt-club-city {
+    font-size: 9pt;
+    color: #666666;
+    white-space: nowrap;
+}
+
+.txt-birth {
+    font-size: 7.5pt;
+    color: #666666;
+    margin-top: 0.6mm;
+    white-space: nowrap;
+}
+
+.col-photo {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    height: 100%;
+    padding-bottom: 0.5mm;
+}
+
+.member-id-photo {
+    width: 21mm;
+    height: 25mm;
+    min-width: 21mm;
+    max-width: 21mm;
+    min-height: 25mm;
+    max-height: 25mm;
+    object-fit: cover;
+    border: 1px solid #666666;
+    background: #f8f8f8;
+    display: block;
+}
+
+.member-id-photo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7pt;
+    color: #666666;
+    text-align: center;
+}
+
+/* Bandeau inférieur bleu Kamikazes avec N° de licence en jaune */
+.card-left-footer {
+    background-color: #0086ff;
+    border-top: 1px solid #fc0000;
+    height: 7.5mm;
+    min-height: 7.5mm;
+    display: flex;
+    align-items: center;
+    padding: 0 3mm 0 23mm;
+}
+
+.txt-licence-bottom {
+    color: #ffff01;
+    font-size: 9.2pt;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+/* --- 5. VOLET DROIT DE LA CARTE (68mm FIXE : UAS, TÉLÉPILOTE & ASSURANCE) --- */
+.card-right {
+    width: 68mm;
+    min-width: 68mm;
+    max-width: 68mm;
+    height: 100%;
+    flex-shrink: 0;
+    border: 1px solid #e1e1e1;
+    border-left: none;
+    padding: 5mm 3.5mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.8mm;
+    font-size: 8.2pt;
+    color: #666666;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.uas-line {
+    white-space: nowrap;
+}
+
+.uas-line strong {
+    font-weight: bold;
+}
+
+.telepilote-block {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5mm;
+    white-space: nowrap;
+}
+
+.assurance-line {
+    margin-top: 3mm;
+    font-size: 8.2pt;
+    white-space: nowrap;
+}
+
+/* --- 6. ADAPTATION ÉCRAN MOBILE --- */
+@media screen and (max-width: 720px) {
+    body {
+        padding: 10px 8px;
+    }
+
+    .toolbar-no-print {
+        padding: 15px;
+    }
+
+    .toolbar-top h1 {
+        font-size: 1.1rem;
+    }
+
+    .btn-print,
+    .btn-secondary-bar {
+        width: 100%;
+        text-align: center;
+    }
+
+    .sheets-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .member-card-row {
+        zoom: 0.52;
+    }
+}
+
+@media screen and (max-width: 390px) {
+    .member-card-row {
+        zoom: 0.46;
+    }
+}
+
+/* --- 7. RÈGLES D'IMPRESSION / EXPORT PDF --- */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+    }
+
+    body {
+        background: #ffffff;
+        padding: 0;
+        margin: 0;
+    }
+
+    .toolbar-no-print {
+        display: none !important;
+    }
+
+    .sheets-container {
+        gap: 6mm;
+        overflow: visible !important;
+    }
+
+    .member-card-row {
+        zoom: 1 !important;
+        box-shadow: none;
+    }
+}
