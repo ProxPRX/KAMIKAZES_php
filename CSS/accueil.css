@@ -1,0 +1,368 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : ACCUEIL & LISTE DES ACTUALITÉS (index.php & actualites.php)
+   ========================================================================== */
+
+/* --- 1. BANNIÈRE HÉROS : OLAP À GAUCHE, TEXTE AU CENTRE, VILLE D'AGDE À DROITE --- */
+.hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.hero-content {
+    flex: 0 1 auto;
+    text-align: center;
+}
+
+.hero-logo {
+    max-height: 180px;
+    height: 180px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Sur mobile : le texte passe en haut et les 2 logos se placent côte à côte en dessous */
+@media (max-width: 768px) {
+    .hero {
+        padding: 30px 15px;
+    }
+
+    .hero-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px 30px;
+    }
+
+    .hero-content {
+        order: 1;
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .hero-logo-left {
+        order: 2;
+    }
+
+    .hero-logo-right {
+        order: 3;
+    }
+
+    .hero-logo {
+        height: auto;
+        max-height: 140px;
+        max-width: 50%;
+    }
+}
+
+/* --- 2. SECTION "L'IMAGE DU MOMENT" (S'ADAPTE EN PORTRAIT OU PAYSAGE) --- */
+.photo-of-day-section {
+    background: var(--ka-blanc);
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 4px solid var(--ka-rouge);
+    margin-bottom: 35px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.photo-of-day-wrapper {
+    margin: 15px auto 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.photo-of-day-wrapper.paysage {
+    max-width: 800px;
+}
+
+.photo-of-day-wrapper.portrait {
+    max-width: 420px;
+}
+
+.photo-of-day-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    image-orientation: from-image;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.photo-of-day-img:hover {
+    transform: scale(1.015);
+}
+
+.photo-of-day-img.paysage {
+    max-height: 480px;
+}
+
+.photo-of-day-img.portrait {
+    max-height: 580px;
+}
+
+/* --- 3. SECTION "DATES À RETENIR" & FORMULAIRE RAPIDE ADMIN --- */
+.dates-section {
+    background: var(--ka-blanc);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 4px solid var(--ka-bleu);
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.dates-list {
+    list-style: none;
+    max-width: 750px;
+    margin: 10px auto 0 auto;
+    padding: 0;
+    text-align: left;
+}
+
+.dates-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background-color: var(--ka-gris-back);
+    border: 1px solid var(--ka-gris-clair);
+    border-left: 4px solid var(--ka-orange);
+    border-radius: 6px;
+    font-size: 1.02rem;
+}
+
+.admin-date-form {
+    max-width: 750px;
+    margin: 18px auto 0 auto;
+    padding-top: 15px;
+    border-top: 1px dashed var(--ka-gris-clair);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-date-inputs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-date-inputs input {
+    flex: 1;
+    min-width: 140px;
+    padding: 9px 12px;
+    border: 1px solid var(--ka-gris-clair);
+    border-radius: 4px;
+    font-size: 0.92rem;
+    color: var(--ka-gris-fonce);
+}
+
+.btn-tiny-del {
+    background: var(--ka-rouge);
+    color: var(--ka-blanc);
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
+    font-size: 0.78rem;
+}
+
+.btn-tiny-del:hover {
+    background: var(--ka-orange);
+}
+
+/* --- 4. SECTION "STATION MÉTÉO DU TERRAIN EN DIRECT" (IFRAME) --- */
+.weather-section {
+    background: var(--ka-blanc);
+    padding: 30px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 4px solid var(--ka-orange);
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.weather-section p {
+    color: var(--ka-gris-fonce);
+    margin-bottom: 20px;
+}
+
+.weather-iframe-wrapper {
+    width: 100%;
+    height: 600px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--ka-gris-clair);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    background-color: var(--ka-gris-back);
+}
+
+.weather-iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.weather-actions {
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .dates-section,
+    .weather-section {
+        padding: 20px 15px;
+    }
+
+    .weather-iframe-wrapper {
+        height: 460px;
+    }
+}
+
+/* --- 5. ENCADRÉ DE LA VIDÉO DE PRÉSENTATION DU TERRAIN --- */
+.video-section {
+    background: var(--ka-blanc);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 4px solid var(--ka-vert);
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+/* --- 6. GRILLE ET CARTES D'ACTUALITÉS (ACCUEIL & PAGE ACTUALITÉS) --- */
+.news-section {
+    margin-bottom: 40px;
+}
+
+.news-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.news-header-flex h2 {
+    margin-bottom: 20px;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.news-card {
+    background: var(--ka-blanc);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid var(--ka-gris-clair);
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--ka-bleu);
+}
+
+/* Mise en évidence des articles en attente de validation */
+.news-card-pending {
+    border: 2px dashed var(--ka-orange);
+    background-color: var(--ka-blanc);
+}
+
+.badge-attente-carte {
+    display: inline-block;
+    background-color: var(--ka-orange);
+    color: var(--ka-blanc);
+    border: 1px solid var(--ka-orange);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-left: 6px;
+}
+
+.pending-alert-banner {
+    background-color: var(--ka-blanc);
+    color: var(--ka-orange);
+    border: 1px solid var(--ka-orange);
+    border-left: 5px solid var(--ka-orange);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.news-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.news-image.placeholder-img {
+    height: 200px;
+}
+
+.news-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.news-date {
+    display: block;
+    color: var(--ka-rouge);
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.news-content h3 {
+    color: var(--ka-bleu);
+    margin-bottom: 10px;
+}
+
+.news-content p {
+    flex: 1;
+    margin-bottom: 15px;
+    color: var(--ka-gris-fonce);
+}
+
+.read-more {
+    display: inline-block;
+    margin-top: auto;
+    color: var(--ka-bleu);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.read-more:hover {
+    color: var(--ka-orange);
+}
