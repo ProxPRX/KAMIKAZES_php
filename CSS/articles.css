@@ -13,7 +13,6 @@
     margin-bottom: 40px;
 }
 
-/* Bandeaux de statut et de validation (En attente / Validé) */
 .validation-banner {
     padding: 16px 20px;
     border-radius: 8px;
@@ -80,11 +79,13 @@
     text-decoration: none;
     font-weight: bold;
     font-size: 0.9rem;
-    transition: 0.3s;
+    transition: 0.25s;
 }
 
 .btn-edit:hover {
-    background-color: var(--ka-orange);
+    background-color: var(--ka-jaune);
+    color: var(--ka-bleu);
+    box-shadow: inset 0 0 0 2px var(--ka-bleu);
 }
 
 .btn-delete {
@@ -96,11 +97,11 @@
     font-weight: bold;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.25s;
 }
 
 .btn-delete:hover {
-    background-color: var(--ka-orange);
+    box-shadow: inset 0 -3px 0 var(--ka-jaune);
 }
 
 /* --- 2. EN-TÊTE, MÉTADONNÉES & CORPS DE L'ARTICLE --- */
@@ -169,7 +170,7 @@
     color: var(--ka-bleu);
     margin-bottom: 15px;
     padding-bottom: 8px;
-    border-bottom: 2px solid var(--ka-orange);
+    border-bottom: 3px solid var(--ka-orange);
     display: inline-block;
 }
 
