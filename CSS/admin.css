@@ -1,0 +1,376 @@
+/* ==========================================================================
+   FEUILLE DE STYLE : ADMINISTRATION, FORMULAIRES & CONNEXION
+   ========================================================================== */
+
+/* --- 1. CONTENEURS ET CHAMPS DE FORMULAIRES --- */
+.admin-box {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    background: var(--ka-blanc);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 5px solid var(--ka-rouge);
+}
+
+.admin-box-wide {
+    max-width: 1050px;
+}
+
+.admin-box h1 {
+    color: var(--ka-bleu);
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--ka-bleu);
+}
+
+.form-help {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--ka-gris-fonce);
+    margin-top: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="url"],
+.form-group input[type="password"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--ka-gris-clair);
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--ka-gris-fonce);
+    background-color: var(--ka-gris-back);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    background: var(--ka-gris-back);
+    border: 1px dashed var(--ka-bleu);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.btn-submit {
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* --- 2. MESSAGES D'ALERTE (ERREUR, SUCCÈS & MODÉRATION) --- */
+.alert-error,
+.error-msg {
+    background: var(--ka-blanc);
+    color: var(--ka-rouge);
+    border: 1px solid var(--ka-rouge);
+    border-left: 4px solid var(--ka-rouge);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.error-msg {
+    text-align: center;
+}
+
+.alert-success {
+    background: var(--ka-blanc);
+    color: var(--ka-vert);
+    border: 1px solid var(--ka-vert);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--ka-vert);
+    font-weight: bold;
+}
+
+.info-moderation {
+    background: var(--ka-blanc);
+    color: var(--ka-bleu);
+    border: 1px solid var(--ka-bleu);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--ka-bleu);
+}
+
+/* --- 3. APERÇU DES PHOTOS EXISTANTES (ÉDITION D'ARTICLE & PUBLICATION MEMBRE) --- */
+.existing-photos-grid,
+.edit-gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.existing-photo-item,
+.edit-gallery-item {
+    position: relative;
+    width: 110px;
+    border: 1px solid var(--ka-gris-clair);
+    border-radius: 6px;
+    padding: 5px;
+    background: var(--ka-gris-back);
+    text-align: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.existing-photo-item img,
+.edit-gallery-item img {
+    width: 100%;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* --- 4. TABLEAU DE GESTION DES MEMBRES, STATUTS & DATES D'EXPIRATION --- */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+}
+
+.members-table th,
+.members-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--ka-gris-clair);
+    vertical-align: middle;
+}
+
+.members-table th {
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.members-table tr:hover {
+    background-color: var(--ka-gris-back);
+}
+
+/* Badges de rôles */
+.role-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.role-admin {
+    background-color: var(--ka-rouge);
+    color: var(--ka-blanc);
+}
+
+.role-bureau {
+    background-color: var(--ka-bleu);
+    color: var(--ka-blanc);
+}
+
+.role-membre {
+    background-color: var(--ka-vert);
+    color: var(--ka-blanc);
+}
+
+.role-membre_associe {
+    background-color: var(--ka-blanc);
+    color: var(--ka-bleu);
+    border: 1px solid var(--ka-bleu);
+}
+
+.role-attente_validation {
+    background-color: var(--ka-orange);
+    color: var(--ka-blanc);
+}
+
+/* Badges de date d'expiration */
+.exp-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.exp-valide {
+    background-color: var(--ka-gris-back);
+    color: var(--ka-vert);
+    border: 1px solid var(--ka-vert);
+}
+
+.exp-expire {
+    background-color: var(--ka-gris-back);
+    color: var(--ka-rouge);
+    border: 1px solid var(--ka-rouge);
+}
+
+.exp-illimite {
+    background-color: var(--ka-gris-clair);
+    color: var(--ka-gris-fonce);
+}
+
+/* Champs d'action compacts dans le tableau */
+.table-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.select-role-inline,
+.input-date-inline,
+.input-aphd-inline {
+    padding: 5px 7px;
+    border: 1px solid var(--ka-gris-clair);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--ka-gris-fonce);
+    background: var(--ka-blanc);
+}
+
+.input-date-inline {
+    width: 125px;
+}
+
+.input-aphd-inline {
+    width: 130px;
+}
+
+.btn-small {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--ka-blanc);
+    background-color: var(--ka-bleu);
+    text-decoration: none;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-small:hover {
+    background-color: var(--ka-orange);
+}
+
+.btn-small-danger {
+    background-color: var(--ka-rouge);
+}
+
+.btn-small-danger:hover {
+    background-color: var(--ka-orange);
+}
+
+/* --- 5. BOÎTE DE CONNEXION & CHAMP MOT DE PASSE AVEC ICÔNE ŒIL (connexion.php) --- */
+.login-box {
+    max-width: 450px;
+    margin: 60px auto;
+    background: var(--ka-blanc);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-top: 5px solid var(--ka-rouge);
+}
+
+.login-box h2 {
+    display: block;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--ka-bleu);
+}
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 45px !important;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ka-bleu);
+    opacity: 0.7;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    color: var(--ka-orange);
+}
+
+.toggle-password svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (max-width: 768px) {
+    .admin-box,
+    .login-box {
+        padding: 20px;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
