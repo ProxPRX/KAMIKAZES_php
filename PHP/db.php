@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Identifiants MySQL (à remplacer par ceux de ta nouvelle base)
 $host     = 'mysql-kamikazesagathois.alwaysdata.net';
-$dbname   = 'kamikazesagathois_bd';   // Nom exact de ta base MySQL
+$dbname   = 'kamikazesagathois_db';   // Nom exact de ta base MySQL
 $username = 'kamikazesagathois_romain';       // Utilisateur MySQL
 $password = '@Romainj770123';  // Mot de passe MySQL
 
