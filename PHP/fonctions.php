@@ -731,34 +731,34 @@ function obtenirContenuSiteDefaut() {
             'hero_bouton_texte' => "Rejoindre le club",
             'meteo_titre'       => "🌤️ Anémomètre & Météo du terrain en direct",
             'meteo_texte'       => "Consultez le vent et la météo en temps réel sur notre terrain d'Agde avant de venir voler !",
-            'meteo_url'         => "https://www.ecowitt.net/home/share?authorize=AFFR13",
+            'meteo_url'         => "https://www.ecowitt.net/home/share?authorize=AFFR13&device_id=ZnRxaExLNjUyNEZ0NGpieDd5dXRLQT09",
             'video_titre'       => "Découvrez le club en vidéo",
             'video_texte'       => "La Coupe des Polyclubs et nos vols chez Les Kamikazes Agathois.",
-            'video_youtube'     => "https://www.dailymotion.com/embed/video/x3t21nq"
+            'video_youtube'     => "https://geo.dailymotion.com/player.html?video=x3t21nq"
         ],
         'club' => [
             'presentation' => [
                 'titre'       => "Qui sommes-nous ?",
                 'paragraphes' => [
-                    "Les Kamikazes Agathois sont un club d'aéromodélisme basé à Agde dans l'Hérault (34). Nous pratiquons le vol de modèles réduits de Catégorie A (masse inférieure à 25 kg) : planeurs, avions, hélicoptères et multirotors.",
-                    "Association loi 1901 affiliée au réseau OLAP et soutenue par la Ville d'Agde et Jeunesse et Sports, le club réunit des passionnés de tous niveaux dans un cadre convivial, aussi bien sur notre terrain extérieur qu'en vol indoor."
+                    "Les Kamikazes Agathois sont une association d'aéromodélistes d'Agde et environs (34), possédant un terrain de vol juste à la sortie de la ville. Notre association a pour vocation d'accueillir toute personne voulant pratiquer l'aéromodélisme en Catégorie A (modèles pesant moins de 25 kilos et motorisés à moins de 160cc ou 15kW) : planeurs, avions, hélicoptères et multirotors.",
+                    "Association loi 1901 affiliée à l'OLAP (Organisation Languedocienne d'Aéronautique Populaire) et soutenue par la Mairie d'Agde ainsi que le service Jeunesse et Sports, le club réunit des passionnés de tous niveaux dans un cadre convivial, aussi bien sur notre terrain extérieur qu'en vol indoor."
                 ]
             ],
             'terrains' => [
                 [
                     'id'          => 'terrain_agde',
                     'titre'       => "Terrain d'évolution extérieur (Agde)",
-                    'description' => "Notre terrain d'aéromodélisme est situé sur la commune d'Agde, direction Marseillan.",
+                    'description' => "Notre terrain d'aéromodélisme offre tout le confort d'un site dégagé, juste à la sortie d'Agde en direction de Marseillan.",
                     'points'      => [
-                        "Pistes : 2 pistes goudronnées pour décoller et atterrir confortablement.",
+                        "Pistes : 2 pistes goudronnées orientées dans le sens des vents dominants et un taxiway d'accès goudronné.",
+                        "Aire de préparation : Tables pour les membres dans un enclos sécurisé par un filet de protection.",
                         "Catégorie : Modèles réduits de Catégorie A (moins de 25 kg).",
-                        "Disciplines : Planeurs, avions, hélicoptères et multirotors.",
-                        "Équipements : Station météo / anémomètre connecté en direct."
+                        "Équipements : Station météo / anémomètre Ecowitt connecté en direct."
                     ],
-                    'gps_nord'    => '',
-                    'gps_est'     => '',
-                    'maps_embed'  => 'https://maps.google.com/maps?q=Les+Kamikazes+Agathois+Agde&hl=fr&z=15&output=embed',
-                    'maps_lien'   => 'https://www.google.com/maps/search/?api=1&query=Les+Kamikazes+Agathois+Agde',
+                    'gps_nord'    => '43°19\'22.2"',
+                    'gps_est'     => '003°29\'44.3"',
+                    'maps_embed'  => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1098.012464469947!2d3.4947575155531485!3d43.32282954352218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDE5JzIyLjIiTiAzwrAyOSc0NC4zIkU!5e1!3m2!1sfr!2sfr!4v1515965560645',
+                    'maps_lien'   => 'https://www.google.com/maps/search/?api=1&query=43.322833,3.495639',
                     'pdf_fichier' => '',
                     'pdf_libelle' => ''
                 ]
@@ -767,16 +767,17 @@ function obtenirContenuSiteDefaut() {
                 [
                     'id'          => 'indoor_agde',
                     'titre'       => "Vol Indoor — Salles Molinié / Charrin (Agde)",
-                    'description' => "Situé au 7 Avenue Jean Moulin, 34300 Agde (Palais des Sports / Salles Molinié et Charrin).",
+                    'description' => "La ville d'Agde met ponctuellement à disposition des adhérents l'une des salles polyvalentes Henri Molinié ou Philippe Charrin, au 7 Avenue Jean Moulin à Agde.",
                     'points'      => [
                         "Adresse : 7 Avenue Jean Moulin, 34300 Agde.",
-                        "Modèles : Avions indoor légers, micro-hélicoptères et petits multirotors.",
-                        "Ambiance : Vols à l'abri du vent dans une atmosphère conviviale."
+                        "Créneaux : Le samedi ou le dimanche matin selon le calendrier du club.",
+                        "Modèles : Avions indoor légers, planeurs, micro-hélicoptères et multirotors adaptés.",
+                        "Ambiance : Idéal pour progresser au pilotage à l'abri du vent."
                     ],
-                    'gps_nord'    => '',
-                    'gps_est'     => '',
-                    'maps_embed'  => 'https://maps.google.com/maps?q=7+Avenue+Jean+Moulin+34300+Agde&hl=fr&z=16&output=embed',
-                    'maps_lien'   => 'https://www.google.com/maps/search/?api=1&query=7+Avenue+Jean+Moulin+34300+Agde',
+                    'gps_nord'    => '43°18\'42.2"',
+                    'gps_est'     => '003°28\'52.4"',
+                    'maps_embed'  => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1451.560688737505!2d3.4812167782435868!3d43.311718492664646!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12b13c8b73908ce9%3A0x649df38e096d2a4!2sSalle%20Henri%20MOLINI%C3%89!5e0!3m2!1sfr!2sfr!4v1745942414639!5m2!1sfr!2sfr',
+                    'maps_lien'   => 'https://www.google.com/maps/search/?api=1&query=Salle+Henri+Molinie+7+Avenue+Jean+Moulin+34300+Agde',
                     'pdf_fichier' => '',
                     'pdf_libelle' => ''
                 ]
@@ -798,15 +799,15 @@ function obtenirContenuSiteDefaut() {
             'inscription' => [
                 'titre'             => "Rejoindre Les Kamikazes Agathois",
                 'paragraphes_intro' => [
-                    "Vous souhaitez découvrir l'aéromodélisme ou rejoindre notre club à Agde ? Contactez-nous par e-mail ou passez directement nous rencontrer sur le terrain !"
+                    "Vous souhaitez découvrir l'aéromodélisme ou rejoindre notre club à Agde ? Effectuez votre adhésion directement en ligne via notre espace Yapla ci-dessous ou venez nous rencontrer sur le terrain !"
                 ],
                 'titre_tarif'       => "Adhésion & Informations",
                 'lignes_tarif'      => [
                     "Affiliation : Club affilié au réseau OLAP.",
                     "Installations : Accès au terrain extérieur (2 pistes goudronnées) et aux séances de vol indoor.",
-                    "Note : Contactez le bureau pour connaître les tarifs de la saison en cours."
+                    "Note : Toutes les formules d'adhésion sont disponibles dans le formulaire en ligne ci-dessous."
                 ],
-                'yapla_url'         => "",
+                'yapla_url'         => "https://kamikazes-agathois.s2.yapla.com/fr/",
                 'email_contact'     => "kamikazes34300@gmail.com"
             ]
         ],
@@ -816,32 +817,32 @@ function obtenirContenuSiteDefaut() {
                 [
                     'id'          => 'prat_planeurs',
                     'icone'       => '🦅',
-                    'titre'       => 'Planeurs',
+                    'titre'       => 'Vol à voile (Planeurs)',
                     'description' => "Vol thermique, motoplaneurs ou grands planeurs : profitez du ciel agathois et des ascendances pour des vols tout en finesse."
                 ],
                 [
                     'id'          => 'prat_avions',
                     'icone'       => '✈️',
                     'titre'       => 'Avions',
-                    'description' => "Des modèles écoles aux maquettes et avions de voltige, thermiques ou électriques, nos deux pistes goudronnées facilitent tous les décollages et atterrissages."
+                    'description' => "Thermiques (méthanol ou essence, 2 temps et 4 temps) et électriques : nos deux pistes goudronnées facilitent tous les décollages et atterrissages."
                 ],
                 [
                     'id'          => 'prat_helicopteres',
                     'icone'       => '🚁',
                     'titre'       => 'Hélicoptères',
-                    'description' => "Vol maquette, translation souple ou voltige 3D : les passionnés de voilures tournantes évoluent en toute sécurité sur notre terrain."
+                    'description' => "Thermiques (2 temps / 4 temps) ou électriques, vol maquette ou voltige 3D : les passionnés de voilures tournantes évoluent en toute sécurité sur notre terrain."
                 ],
                 [
                     'id'          => 'prat_multirotors',
                     'icone'       => '🛸',
-                    'titre'       => 'Multirotors',
+                    'titre'       => 'Multirotors (Drones)',
                     'description' => "Drones de loisir, vol à vue ou FPV : le terrain et les séances indoor offrent un cadre idéal pour partager réglages et sessions de vol."
                 ],
                 [
                     'id'          => 'prat_indoor',
                     'icone'       => '🏟️',
                     'titre'       => 'Vol en Salle (Indoor)',
-                    'description' => "Lorsque le vent souffle ou en saison hivernale, nous nous retrouvons aux Salles Molinié / Charrin (7 Avenue Jean Moulin à Agde) avec nos modèles légers."
+                    'description' => "Ponctuellement le samedi ou le dimanche matin, nous nous retrouvons aux Salles Molinié / Charrin (7 Avenue Jean Moulin à Agde) avec nos modèles légers."
                 ]
             ],
             'evenements_intro' => "La vie des Kamikazes Agathois est rythmée par nos rencontres amicales, nos séances indoor et les rendez-vous interclubs.",
@@ -875,54 +876,18 @@ function obtenirContenuSiteDefaut() {
         'liens' => [
             'categories' => [
                 [
-                    'id'    => 'cat_partenaires',
-                    'titre' => '🤝 Nos Partenaires Locaux',
-                    'liens' => [
-                        [
-                            'titre'       => "Mecanel",
-                            'url'         => "https://www.google.com/search?q=Mecanel+Agde",
-                            'description' => "Partenaire local des Kamikazes Agathois."
-                        ],
-                        [
-                            'titre'       => "Mika Services",
-                            'url'         => "https://www.google.com/search?q=Mika+Services+Agde",
-                            'description' => "Partenaire local des Kamikazes Agathois."
-                        ],
-                        [
-                            'titre'       => "Carrefour Market Agde",
-                            'url'         => "https://www.carrefour.fr/",
-                            'description' => "Partenaire local à Agde."
-                        ],
-                        [
-                            'titre'       => "KKOT",
-                            'url'         => "https://www.google.com/search?q=KKOT+Agde",
-                            'description' => "Partenaire local des Kamikazes Agathois."
-                        ],
-                        [
-                            'titre'       => "Numeric",
-                            'url'         => "https://www.google.com/search?q=Numeric+Agde",
-                            'description' => "Partenaire local des Kamikazes Agathois."
-                        ]
-                    ]
-                ],
-                [
                     'id'    => 'cat_institutions',
-                    'titre' => '🏛️ Institutions & Fédérations',
+                    'titre' => '🏛️ Institutions & Réglementation',
                     'liens' => [
                         [
                             'titre'       => "Ville d'Agde",
                             'url'         => "https://www.ville-agde.fr/",
-                            'description' => "Site officiel de la Mairie d'Agde, partenaire du club."
+                            'description' => "Site officiel de la Mairie d'Agde, qui soutient le club et met à disposition nos salles indoor."
                         ],
                         [
                             'titre'       => "OLAP Aéromodélisme",
                             'url'         => "https://www.google.com/search?q=OLAP+aeromodelisme",
-                            'description' => "Réseau d'aéromodélisme auquel le club est affilié."
-                        ],
-                        [
-                            'titre'       => "FFAM - Fédération Française d'Aéro-Modélisme",
-                            'url'         => "https://www.ffam.asso.fr/",
-                            'description' => "Le site officiel de la fédération nationale."
+                            'description' => "Organisation Languedocienne d'Aéronautique Populaire à laquelle le club est affilié."
                         ],
                         [
                             'titre'       => "AlphaTango (DGAC)",
