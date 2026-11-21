@@ -19,6 +19,24 @@ $roleAffiche       = strtoupper(str_replace('_', ' ', (string)$role));
 ?>
 
 <header>
+    <!-- Bandeau dynamique inspiré du site historique des Kamikazes Agathois -->
+    <div class="ka-dynamic-banner">
+        <a href="index.php" class="ka-banner-link" aria-label="Retour à l'accueil - Les Kamikazes Agathois">
+            <img src="IMG/bandeau_fond.jpg" alt="" class="ka-banner-bg" aria-hidden="true">
+            <div class="ka-banner-overlay" aria-hidden="true"></div>
+
+            <div class="ka-banner-inner">
+                <div class="ka-banner-text">
+                    <span class="ka-banner-title">Club d'aéromodélisme Agathois !</span>
+                </div>
+
+                <div class="ka-banner-plane-wrap">
+                    <img src="IMG/bandeau_avion.png" alt="Pilote en avion - Les Kamikazes Agathois" class="ka-banner-plane">
+                </div>
+            </div>
+        </a>
+    </div>
+
     <!-- Barre de navigation principale -->
     <nav class="navbar">
         <ul>
