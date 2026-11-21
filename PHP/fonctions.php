@@ -960,6 +960,17 @@ function chargerContenuSite() {
         $fusion['club']['inscription']['paragraphes_intro'] = array_values($decode['club']['inscription']['paragraphes_intro']);
     }
 
+    // Conserve exactement les catégories de liens du JSON et purge automatiquement l'ancienne catégorie "Nos Partenaires Locaux"
+    if (isset($decode['liens']['categories']) and is_array($decode['liens']['categories'])) {
+        $catsFiltrees = array_values(array_filter($decode['liens']['categories'], function ($cat) {
+            return ($cat['id'] ?? '') !== 'cat_partenaires';
+        }));
+        $fusion['liens']['categories'] = $catsFiltrees;
+        if (count($catsFiltrees) !== count($decode['liens']['categories'])) {
+            sauvegarderContenuSite($fusion);
+        }
+    }
+
     return $fusion;
 }
 
