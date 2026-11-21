@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
     // 1. Ajouter une nouvelle catégorie de liens
     if ($action === 'ajouter_categorie') {
-        $titreCat  = trim($_POST['titre_categorie'] ?? '');
-        $lTitre    = trim($_POST['premier_lien_titre'] ?? '');
-        $lUrl      = trim($_POST['premier_lien_url'] ?? '');
-        $lDesc     = trim($_POST['premier_lien_desc'] ?? '');
+        $titreCat = trim($_POST['titre_categorie'] ?? '');
+        $lTitre   = trim($_POST['premier_lien_titre'] ?? '');
+        $lUrl     = trim($_POST['premier_lien_url'] ?? '');
+        $lDesc    = trim($_POST['premier_lien_desc'] ?? '');
 
         if ($titreCat === '' or $lTitre === '' or $lUrl === '') {
             $messageErreur = "Veuillez renseigner le titre de la catégorie et au moins un premier lien.";
@@ -62,21 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         }
     }
 
-    // 3. Supprimer une catégorie complète
+    // 3. Supprimer une catégorie complète (sans blocage)
     elseif ($action === 'supprimer_categorie') {
         $catId = trim($_POST['cat_id'] ?? '');
-        if (count($liensData['categories']) <= 1) {
-            $messageErreur = "Il doit rester au minimum une catégorie de liens.";
-        } else {
-            foreach ($liensData['categories'] as $idx => $cat) {
-                if (($cat['id'] ?? '') === $catId) {
-                    unset($liensData['categories'][$idx]);
-                    $liensData['categories'] = array_values($liensData['categories']);
-                    $contenuSite['liens']    = $liensData;
-                    sauvegarderContenuSite($contenuSite);
-                    $messageSucces = "🗑️ La catégorie a bien été supprimée.";
-                    break;
-                }
+        foreach ($liensData['categories'] as $idx => $cat) {
+            if (($cat['id'] ?? '') === $catId) {
+                unset($liensData['categories'][$idx]);
+                $liensData['categories'] = array_values($liensData['categories']);
+                $contenuSite['liens']    = $liensData;
+                sauvegarderContenuSite($contenuSite);
+                $messageSucces = "🗑️ Le bloc catégorie a bien été supprimé.";
+                break;
             }
         }
     }
@@ -164,93 +160,109 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         <?php endif; ?>
 
         <section class="links-section">
-            <div class="links-grid">
-                <?php foreach ($liensData['categories'] as $categorie): ?>
-                    <div class="link-category">
-                        <h3><?= htmlspecialchars($categorie['titre']) ?></h3>
+            <?php if (empty($liensData['categories'])): ?>
+                <div class="info-box" style="text-align: center;">
+                    <p>Aucune catégorie de liens pour le moment.<?= $estAdmin ? ' Utilisez le bloc ci-dessous pour en créer une.' : '' ?></p>
+                </div>
+            <?php else: ?>
+                <div class="links-grid">
+                    <?php foreach ($liensData['categories'] as $categorie): ?>
+                        <div class="link-category">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:20px; padding-bottom:10px; border-bottom:2px solid var(--ka-orange);">
+                                <h3 style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
+                                    <?= htmlspecialchars($categorie['titre']) ?>
+                                </h3>
 
-                        <ul class="styled-link-list">
-                            <?php foreach ($categorie['liens'] as $lIdx => $lien): ?>
-                                <li>
-                                    <a href="<?= htmlspecialchars($lien['url']) ?>" target="_blank" rel="noopener noreferrer">
-                                        <?= htmlspecialchars($lien['titre']) ?>
-                                    </a>
-                                    <?php if (!empty($lien['description'])): ?>
-                                        <p><?= htmlspecialchars($lien['description']) ?></p>
-                                    <?php endif; ?>
-
-                                    <?php if ($estAdmin): ?>
-                                        <details style="margin-top: 8px;">
-                                            <summary style="cursor: pointer; font-size: 0.8rem; color: var(--ka-bleu); font-weight: bold;">✏️ Modifier / Supprimer ce lien</summary>
-                                            <div style="background: var(--ka-gris-back); padding: 10px; border-radius: 6px; margin-top: 6px; border: 1px solid var(--ka-gris-clair);">
-                                                <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;">
-                                                    <input type="hidden" name="action_cms_liens" value="sauvegarder_lien">
-                                                    <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
-                                                    <input type="hidden" name="lien_index" value="<?= (int)$lIdx ?>">
-                                                    <input type="text" name="titre" value="<?= htmlspecialchars($lien['titre']) ?>" required placeholder="Titre du site" style="padding:6px; font-size:0.85rem;">
-                                                    <input type="url" name="url" value="<?= htmlspecialchars($lien['url']) ?>" required placeholder="https://..." style="padding:6px; font-size:0.85rem;">
-                                                    <input type="text" name="description" value="<?= htmlspecialchars($lien['description'] ?? '') ?>" placeholder="Description courte" style="padding:6px; font-size:0.85rem;">
-                                                    <button type="submit" class="btn-cms-save" style="padding:6px 10px; font-size:0.82rem;">💾 Enregistrer</button>
-                                                </form>
-                                                <form method="POST" action="liens.php" onsubmit="return confirm('Supprimer ce lien ?');">
-                                                    <input type="hidden" name="action_cms_liens" value="supprimer_lien">
-                                                    <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
-                                                    <input type="hidden" name="lien_index" value="<?= (int)$lIdx ?>">
-                                                    <button type="submit" class="btn-cms-delete" style="padding:5px 10px; font-size:0.8rem; width:100%;">🗑️ Supprimer ce lien</button>
-                                                </form>
-                                            </div>
-                                        </details>
-                                    <?php endif; ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-
-                        <?php if ($estAdmin): ?>
-                            <details class="cms-admin-details" style="margin-top: 20px; margin-bottom: 0;">
-                                <summary class="cms-admin-summary" style="font-size: 0.85rem;">➕ Ajouter un lien ou gérer cette catégorie (Admin)</summary>
-                                <div class="cms-admin-form" style="padding: 15px;">
-                                    <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:10px; padding-bottom:15px; border-bottom:1px dashed var(--ka-gris-clair);">
-                                        <input type="hidden" name="action_cms_liens" value="sauvegarder_lien">
+                                <?php if ($estAdmin): ?>
+                                    <form method="POST" action="liens.php" style="margin:0; flex-shrink:0;" onsubmit="return confirm('Supprimer définitivement le bloc « <?= htmlspecialchars(addslashes($categorie['titre'])) ?> » et tous ses liens ?');">
+                                        <input type="hidden" name="action_cms_liens" value="supprimer_categorie">
                                         <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
-                                        <strong style="color:var(--ka-bleu); font-size:0.9rem;">➕ Ajouter un nouveau lien ici :</strong>
-                                        <div class="cms-field">
-                                            <label>Nom du site *</label>
-                                            <input type="text" name="titre" required placeholder="Ex: Météo France">
-                                        </div>
-                                        <div class="cms-field">
-                                            <label>Adresse URL *</label>
-                                            <input type="url" name="url" required placeholder="https://...">
-                                        </div>
-                                        <div class="cms-field">
-                                            <label>Description</label>
-                                            <input type="text" name="description" placeholder="Courte présentation du lien...">
-                                        </div>
-                                        <button type="submit" class="btn-cms-save">➕ Ajouter ce lien</button>
+                                        <button type="submit" class="btn-cms-delete" style="padding:5px 10px; font-size:0.78rem;" title="Supprimer ce bloc">🗑️ Supprimer ce bloc</button>
                                     </form>
+                                <?php endif; ?>
+                            </div>
 
-                                    <form method="POST" action="liens.php" style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; margin-top:5px;">
-                                        <input type="hidden" name="action_cms_liens" value="renommer_categorie">
-                                        <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
-                                        <div class="cms-field" style="flex:1; min-width:160px;">
-                                            <label>Renommer la catégorie</label>
-                                            <input type="text" name="titre_categorie" value="<?= htmlspecialchars($categorie['titre']) ?>" required>
-                                        </div>
-                                        <button type="submit" class="btn-cms-save">💾 Renommer</button>
-                                    </form>
+                            <?php if (empty($categorie['liens'])): ?>
+                                <p style="color: var(--ka-gris-fonce); font-style: italic; font-size: 0.92rem; margin-bottom: 10px;">
+                                    Aucun lien dans cette catégorie pour le moment.
+                                </p>
+                            <?php else: ?>
+                                <ul class="styled-link-list">
+                                    <?php foreach ($categorie['liens'] as $lIdx => $lien): ?>
+                                        <li>
+                                            <a href="<?= htmlspecialchars($lien['url']) ?>" target="_blank" rel="noopener noreferrer">
+                                                <?= htmlspecialchars($lien['titre']) ?>
+                                            </a>
+                                            <?php if (!empty($lien['description'])): ?>
+                                                <p><?= htmlspecialchars($lien['description']) ?></p>
+                                            <?php endif; ?>
 
-                                    <?php if (count($liensData['categories']) > 1): ?>
-                                        <form method="POST" action="liens.php" onsubmit="return confirm('Supprimer toute cette catégorie et ses liens ?');">
-                                            <input type="hidden" name="action_cms_liens" value="supprimer_categorie">
+                                            <?php if ($estAdmin): ?>
+                                                <details style="margin-top: 8px;">
+                                                    <summary style="cursor: pointer; font-size: 0.8rem; color: var(--ka-bleu); font-weight: bold;">✏️ Modifier / Supprimer ce lien</summary>
+                                                    <div style="background: var(--ka-gris-back); padding: 10px; border-radius: 6px; margin-top: 6px; border: 1px solid var(--ka-gris-clair);">
+                                                        <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;">
+                                                            <input type="hidden" name="action_cms_liens" value="sauvegarder_lien">
+                                                            <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
+                                                            <input type="hidden" name="lien_index" value="<?= (int)$lIdx ?>">
+                                                            <input type="text" name="titre" value="<?= htmlspecialchars($lien['titre']) ?>" required placeholder="Titre du site" style="padding:6px; font-size:0.85rem;">
+                                                            <input type="url" name="url" value="<?= htmlspecialchars($lien['url']) ?>" required placeholder="https://..." style="padding:6px; font-size:0.85rem;">
+                                                            <input type="text" name="description" value="<?= htmlspecialchars($lien['description'] ?? '') ?>" placeholder="Description courte" style="padding:6px; font-size:0.85rem;">
+                                                            <button type="submit" class="btn-cms-save" style="padding:6px 10px; font-size:0.82rem;">💾 Enregistrer</button>
+                                                        </form>
+                                                        <form method="POST" action="liens.php" onsubmit="return confirm('Supprimer ce lien ?');">
+                                                            <input type="hidden" name="action_cms_liens" value="supprimer_lien">
+                                                            <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
+                                                            <input type="hidden" name="lien_index" value="<?= (int)$lIdx ?>">
+                                                            <button type="submit" class="btn-cms-delete" style="padding:5px 10px; font-size:0.8rem; width:100%;">🗑️ Supprimer ce lien</button>
+                                                        </form>
+                                                    </div>
+                                                </details>
+                                            <?php endif; ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+
+                            <?php if ($estAdmin): ?>
+                                <details class="cms-admin-details" style="margin-top: 20px; margin-bottom: 0;">
+                                    <summary class="cms-admin-summary" style="font-size: 0.85rem;">✏️ Renommer ou ➕ Ajouter un lien (Admin)</summary>
+                                    <div class="cms-admin-form" style="padding: 15px;">
+                                        <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:10px; padding-bottom:15px; border-bottom:1px dashed var(--ka-gris-clair);">
+                                            <input type="hidden" name="action_cms_liens" value="sauvegarder_lien">
                                             <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
-                                            <button type="submit" class="btn-cms-delete" style="width:100%;">🗑️ Supprimer toute la catégorie</button>
+                                            <strong style="color:var(--ka-bleu); font-size:0.9rem;">➕ Ajouter un nouveau lien ici :</strong>
+                                            <div class="cms-field">
+                                                <label>Nom du site *</label>
+                                                <input type="text" name="titre" required placeholder="Ex: Météo France">
+                                            </div>
+                                            <div class="cms-field">
+                                                <label>Adresse URL *</label>
+                                                <input type="url" name="url" required placeholder="https://...">
+                                            </div>
+                                            <div class="cms-field">
+                                                <label>Description</label>
+                                                <input type="text" name="description" placeholder="Courte présentation du lien...">
+                                            </div>
+                                            <button type="submit" class="btn-cms-save">➕ Ajouter ce lien</button>
                                         </form>
-                                    <?php endif; ?>
-                                </div>
-                            </details>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+
+                                        <form method="POST" action="liens.php" style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; margin-top:5px;">
+                                            <input type="hidden" name="action_cms_liens" value="renommer_categorie">
+                                            <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
+                                            <div class="cms-field" style="flex:1; min-width:160px;">
+                                                <label>Renommer le bloc catégorie</label>
+                                                <input type="text" name="titre_categorie" value="<?= htmlspecialchars($categorie['titre']) ?>" required>
+                                            </div>
+                                            <button type="submit" class="btn-cms-save">💾 Renommer</button>
+                                        </form>
+                                    </div>
+                                </details>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details cms-add-block" style="margin-top: 35px;">
