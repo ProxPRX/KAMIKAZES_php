@@ -722,6 +722,29 @@ function formaterUrlIframeMaps($saisie) {
     return 'https://maps.google.com/maps?q=' . rawurlencode($saisie) . '&hl=fr&z=16&output=embed';
 }
 
+// Fusionne la structure par défaut avec le JSON sans JAMAIS réinjecter les éléments supprimés dans les listes
+function fusionnerContenuSiteSansEcraserListes($defaut, $decode) {
+    if (!is_array($defaut) or !is_array($decode)) {
+        return $decode;
+    }
+
+    // Si la valeur par défaut est une liste indexée (0, 1, 2...), la liste du JSON fait foi intégralement (même vide)
+    $estListeDefaut = ($defaut === [] or array_keys($defaut) === range(0, count($defaut) - 1));
+    if ($estListeDefaut) {
+        return array_values($decode);
+    }
+
+    $resultat = $defaut;
+    foreach ($decode as $cle => $valeur) {
+        if (array_key_exists($cle, $defaut) and is_array($defaut[$cle]) and is_array($valeur)) {
+            $resultat[$cle] = fusionnerContenuSiteSansEcraserListes($defaut[$cle], $valeur);
+        } else {
+            $resultat[$cle] = $valeur;
+        }
+    }
+    return $resultat;
+}
+
 // Retourne la structure complète par défaut du site (auto-initialisée si DATA/contenu_site.json n'existe pas encore)
 function obtenirContenuSiteDefaut() {
     return [
@@ -917,7 +940,7 @@ function obtenirContenuSiteDefaut() {
     ];
 }
 
-// Charge le contenu personnalisé du site depuis DATA/contenu_site.json (avec rétrocompatibilité automatique)
+// Charge le contenu personnalisé du site depuis DATA/contenu_site.json (avec rétrocompatibilité et respect total des suppressions)
 function chargerContenuSite() {
     $cheminJson = dirname(__DIR__) . '/DATA/contenu_site.json';
     $defaut     = obtenirContenuSiteDefaut();
@@ -933,6 +956,7 @@ function chargerContenuSite() {
         return $defaut;
     }
 
+    // Rétrocompatibilité des anciens champs paragraphe unique
     if (isset($decode['club']['presentation']['paragraphe_1']) and empty($decode['club']['presentation']['paragraphes'])) {
         $decode['club']['presentation']['paragraphes'] = array_values(array_filter([
             trim($decode['club']['presentation']['paragraphe_1'] ?? ''),
@@ -946,27 +970,16 @@ function chargerContenuSite() {
         $decode['club']['inscription']['paragraphes_intro'] = [trim($decode['club']['inscription']['texte_intro'])];
     }
 
-    $fusion = array_replace_recursive($defaut, $decode);
-    if (!empty($decode['club']['presentation']['paragraphes'])) {
-        $fusion['club']['presentation']['paragraphes'] = array_values($decode['club']['presentation']['paragraphes']);
-    }
-    if (!empty($decode['club']['association']['paragraphes_legal'])) {
-        $fusion['club']['association']['paragraphes_legal'] = array_values($decode['club']['association']['paragraphes_legal']);
-    }
-    if (!empty($decode['club']['association']['bureau'])) {
-        $fusion['club']['association']['bureau'] = array_values($decode['club']['association']['bureau']);
-    }
-    if (!empty($decode['club']['inscription']['paragraphes_intro'])) {
-        $fusion['club']['inscription']['paragraphes_intro'] = array_values($decode['club']['inscription']['paragraphes_intro']);
-    }
+    // Fusion sécurisée qui ne réinjecte jamais les blocs ou liens supprimés
+    $fusion = fusionnerContenuSiteSansEcraserListes($defaut, $decode);
 
-    // Conserve exactement les catégories de liens du JSON et purge automatiquement l'ancienne catégorie "Nos Partenaires Locaux"
-    if (isset($decode['liens']['categories']) and is_array($decode['liens']['categories'])) {
-        $catsFiltrees = array_values(array_filter($decode['liens']['categories'], function ($cat) {
+    // Purge automatique d'une éventuelle ancienne catégorie "Nos Partenaires Locaux"
+    if (isset($fusion['liens']['categories']) and is_array($fusion['liens']['categories'])) {
+        $catsFiltrees = array_values(array_filter($fusion['liens']['categories'], function ($cat) {
             return ($cat['id'] ?? '') !== 'cat_partenaires';
         }));
-        $fusion['liens']['categories'] = $catsFiltrees;
-        if (count($catsFiltrees) !== count($decode['liens']['categories'])) {
+        if (count($catsFiltrees) !== count($fusion['liens']['categories'])) {
+            $fusion['liens']['categories'] = $catsFiltrees;
             sauvegarderContenuSite($fusion);
         }
     }
