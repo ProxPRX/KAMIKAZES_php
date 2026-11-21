@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         }
     }
 
-    // 4. Modifier l'Association (paragraphes multiples) & le Bureau Directeur (lignes dynamiques)
+    // 4. Modifier l'Association (paragraphes multiples) & le Bureau (lignes dynamiques)
     elseif ($action === 'modifier_association') {
         $paragraphesLegal = [];
         if (!empty($_POST['paragraphes']) and is_array($_POST['paragraphes'])) {
@@ -259,9 +259,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
     // 7. Modifier la section Inscription & Tarifs Yapla (avec paragraphes multiples)
     elseif ($action === 'modifier_inscription') {
-        $clubData['inscription']['titre']         = trim($_POST['titre'] ?? 'Rejoindre les Kamikazes Agathois');
+        $clubData['inscription']['titre']         = trim($_POST['titre'] ?? 'Rejoindre Les Kamikazes Agathois');
         $clubData['inscription']['titre_tarif']   = trim($_POST['titre_tarif'] ?? '');
-        $clubData['inscription']['yapla_url']     = trim($_POST['yapla_url'] ?? '');
+        $clubData['inscription']['yapla_url']     = trim($_POST['yapla_url'] ?? 'https://kamikazes-agathois.s2.yapla.com/fr/');
         $clubData['inscription']['email_contact'] = trim($_POST['email_contact'] ?? 'kamikazes34300@gmail.com');
 
         $paragraphesIntro = [];
@@ -288,6 +288,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         $messageSucces = "✅ La section Inscription & Tarifs a bien été mise à jour.";
     }
 }
+
+// URL Yapla effective (garantit l'affichage de l'iframe Kamikazes même si un ancien JSON avait un champ vide)
+$yaplaUrl = trim((string)($clubData['inscription']['yapla_url'] ?? ''));
+if ($yaplaUrl === '') {
+    $yaplaUrl = 'https://kamikazes-agathois.s2.yapla.com/fr/';
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -297,8 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
     <meta name="description" content="Découvrez Les Kamikazes Agathois, notre terrain d'aéromodélisme à Agde, nos salles indoor, l'association et comment nous rejoindre.">
     <title>Le Club - Les Kamikazes Agathois</title>
     <link rel="icon" type="image/png" href="IMG/favicon.png">
-    <link rel="stylesheet" href="CSS/style.css?v=7">
-    <link rel="stylesheet" href="CSS/club.css?v=7">
+    <link rel="stylesheet" href="CSS/style.css?v=8">
+    <link rel="stylesheet" href="CSS/club.css?v=8">
 </head>
 <body>
 
@@ -317,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         <ul>
             <li><a href="#presentation" class="subnav-link active">Présentation</a></li>
             <li><a href="#terrain" class="subnav-link"><?= count($clubData['terrains']) > 1 ? 'Terrains' : 'Terrain' ?></a></li>
-            <li><a href="#gymnase" class="subnav-link"><?= count($clubData['gymnases']) > 1 ? 'Vol Indoor' : 'Vol Indoor' ?></a></li>
+            <li><a href="#gymnase" class="subnav-link">Vol Indoor</a></li>
             <li><a href="#association" class="subnav-link">L'Association</a></li>
             <li><a href="#inscription" class="subnav-link">Inscription</a></li>
         </ul>
@@ -355,7 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
                         <div id="container-paragraphes-presentation" style="display:flex; flex-direction:column; gap:12px;">
                             <?php foreach ($clubData['presentation']['paragraphes'] as $numP => $texteP): ?>
-                                <div class="cms-field cms-paragraph-item" style="background:#f8fafc; padding:12px; border:1px solid #e2e8f0; border-radius:6px;">
+                                <div class="cms-field cms-paragraph-item" style="background:var(--ka-gris-back); padding:12px; border:1px solid var(--ka-gris-clair); border-radius:6px;">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                                         <label style="margin:0;">Paragraphe <?= (int)$numP + 1 ?></label>
                                         <?php if ($numP > 0): ?>
@@ -429,7 +435,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                             <?php endif; ?>
 
                             <?php if (!empty($terrain['pdf_fichier'])): ?>
-                                <a href="<?= htmlspecialchars($terrain['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: #666; display: block; text-align: center; margin-top: 0;">
+                                <a href="<?= htmlspecialchars($terrain['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: var(--ka-gris-fonce); display: block; text-align: center; margin-top: 0;">
                                     <?= htmlspecialchars(!empty($terrain['pdf_libelle']) ? $terrain['pdf_libelle'] : 'Télécharger le plan de vol (PDF)') ?>
                                 </a>
                             <?php endif; ?>
@@ -528,11 +534,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                         <div class="cms-form-row">
                             <div class="cms-field">
                                 <label>GPS Nord (Optionnel)</label>
-                                <input type="text" name="gps_nord" placeholder='Ex: 43°19&#39;...'>
+                                <input type="text" name="gps_nord" placeholder='Ex: 43°19&#39;22.2"'>
                             </div>
                             <div class="cms-field">
                                 <label>GPS Est (Optionnel)</label>
-                                <input type="text" name="gps_est" placeholder='Ex: 003°29&#39;...'>
+                                <input type="text" name="gps_est" placeholder='Ex: 003°29&#39;44.3"'>
                             </div>
                         </div>
                         <div class="cms-form-row">
@@ -572,7 +578,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                     <h2><?= htmlspecialchars($gymnase['titre']) ?></h2>
                     <div class="dashboard">
                         <div class="info-box">
-                            <h3 class="info-box-title-red">🏛️ Équipements & Accès</h3>
+                            <h3 class="info-box-title-red">🏛️ Équipements &amp; Accès</h3>
                             <p><?= nl2br(htmlspecialchars($gymnase['description'])) ?></p>
                             <?php if (!empty($gymnase['points'])): ?>
                                 <ul>
@@ -614,7 +620,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                             <?php endif; ?>
 
                             <?php if (!empty($gymnase['pdf_fichier'])): ?>
-                                <a href="<?= htmlspecialchars($gymnase['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: #666; display: block; text-align: center; margin-top: 0;">
+                                <a href="<?= htmlspecialchars($gymnase['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: var(--ka-gris-fonce); display: block; text-align: center; margin-top: 0;">
                                     <?= htmlspecialchars(!empty($gymnase['pdf_libelle']) ? $gymnase['pdf_libelle'] : 'Télécharger le document (PDF)') ?>
                                 </a>
                             <?php endif; ?>
@@ -637,7 +643,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                                     <textarea name="description" rows="2" required><?= htmlspecialchars($gymnase['description']) ?></textarea>
                                 </div>
                                 <div class="cms-field">
-                                    <label>Horaires, surface & équipements (1 ligne par point)</label>
+                                    <label>Horaires, surface &amp; équipements (1 ligne par point)</label>
                                     <textarea name="points" rows="5"><?= htmlspecialchars(implode("\n", $gymnase['points'] ?? [])) ?></textarea>
                                     <span class="cms-help">Ex: <code>Adresse : 7 Avenue Jean Moulin, 34300 Agde.</code></span>
                                 </div>
@@ -707,17 +713,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                             <textarea name="description" rows="2" required placeholder="Ex: Situé au 7 Avenue Jean Moulin à Agde."></textarea>
                         </div>
                         <div class="cms-field">
-                            <label>Horaires, surface & équipements (1 ligne par point)</label>
+                            <label>Horaires, surface &amp; équipements (1 ligne par point)</label>
                             <textarea name="points" rows="4" placeholder="Adresse : 7 Avenue Jean Moulin, 34300 Agde.&#10;Modèles : Modèles indoor légers, micro-hélicos et petits multirotors."></textarea>
                         </div>
                         <div class="cms-form-row">
                             <div class="cms-field">
                                 <label>GPS Nord (Optionnel)</label>
-                                <input type="text" name="gps_nord" placeholder='Ex: 43°18&#39;...'>
+                                <input type="text" name="gps_nord" placeholder='Ex: 43°18&#39;42.2"'>
                             </div>
                             <div class="cms-field">
                                 <label>GPS Est (Optionnel)</label>
-                                <input type="text" name="gps_est" placeholder='Ex: 03°28&#39;...'>
+                                <input type="text" name="gps_est" placeholder='Ex: 003°28&#39;52.4"'>
                             </div>
                         </div>
                         <div class="cms-form-row">
@@ -771,7 +777,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
                         <div id="container-paragraphes-legal" style="display:flex; flex-direction:column; gap:12px;">
                             <?php foreach ($clubData['association']['paragraphes_legal'] as $numL => $texteL): ?>
-                                <div class="cms-field cms-paragraph-item" style="background:#f8fafc; padding:12px; border:1px solid #e2e8f0; border-radius:6px;">
+                                <div class="cms-field cms-paragraph-item" style="background:var(--ka-gris-back); padding:12px; border:1px solid var(--ka-gris-clair); border-radius:6px;">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                                         <label style="margin:0;">Paragraphe de présentation <?= (int)$numL + 1 ?></label>
                                         <?php if ($numL > 0): ?>
@@ -809,7 +815,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                         </div>
 
                         <div class="cms-actions">
-                            <button type="submit" class="btn-cms-save">💾 Enregistrer l'Association & le Bureau</button>
+                            <button type="submit" class="btn-cms-save">💾 Enregistrer l'Association &amp; le Bureau</button>
                         </div>
                     </form>
                 </details>
@@ -825,8 +831,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
                         <?php if ($estAdmin): ?>
                             <details style="display: inline-block; margin-left: 10px; vertical-align: middle;">
-                                <summary style="cursor: pointer; font-size: 0.8rem; color: var(--smac-bleu-fonce); font-weight: bold;">⚙️ Remplacer / Suppr. ce PDF</summary>
-                                <div style="background: #fff; border: 1px solid var(--smac-gris-bordure); padding: 12px; border-radius: 6px; margin-top: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                                <summary style="cursor: pointer; font-size: 0.8rem; color: var(--ka-bleu); font-weight: bold;">⚙️ Remplacer / Suppr. ce PDF</summary>
+                                <div style="background: var(--ka-blanc); border: 1px solid var(--ka-gris-clair); padding: 12px; border-radius: 6px; margin-top: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                                     <form method="POST" action="club.php#association" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;">
                                         <input type="hidden" name="action_cms_club" value="sauvegarder_doc_officiel">
                                         <input type="hidden" name="doc_id" value="<?= htmlspecialchars($doc['id']) ?>">
@@ -880,26 +886,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                 </p>
             <?php endforeach; ?>
 
-            <?php if (!empty($clubData['inscription']['titre_tarif'])): ?>
-                <h3 class="subtitle"><?= htmlspecialchars($clubData['inscription']['titre_tarif']) ?></h3>
-            <?php endif; ?>
-
-            <?php if (!empty($clubData['inscription']['lignes_tarif'])): ?>
-                <ul class="club-list">
-                    <?php foreach ($clubData['inscription']['lignes_tarif'] as $ligneT): ?>
-                        <li>
-                            <?php
-                                if (strpos($ligneT, ':') !== false and stripos($ligneT, 'note :') !== 0) {
-                                    list($montantT, $descT) = explode(':', $ligneT, 2);
-                                    echo '<strong>' . htmlspecialchars($montantT) . ' :</strong>' . htmlspecialchars($descT);
-                                } else {
-                                    echo '<em>' . htmlspecialchars($ligneT) . '</em>';
-                                }
-                            ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
+            <h3 class="subtitle"><?= htmlspecialchars($clubData['inscription']['titre_tarif']) ?></h3>
+            <ul class="club-list">
+                <?php foreach ($clubData['inscription']['lignes_tarif'] as $ligneT): ?>
+                    <li>
+                        <?php
+                            if (strpos($ligneT, ':') !== false and stripos($ligneT, 'note :') !== 0) {
+                                list($montantT, $descT) = explode(':', $ligneT, 2);
+                                echo '<strong>' . htmlspecialchars($montantT) . ' :</strong>' . htmlspecialchars($descT);
+                            } else {
+                                echo '<em>' . htmlspecialchars($ligneT) . '</em>';
+                            }
+                        ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details">
@@ -912,14 +913,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                                 <input type="text" name="titre" value="<?= htmlspecialchars($clubData['inscription']['titre']) ?>" required>
                             </div>
                             <div class="cms-field">
-                                <label>Sous-titre Tarif global</label>
-                                <input type="text" name="titre_tarif" value="<?= htmlspecialchars($clubData['inscription']['titre_tarif']) ?>">
+                                <label>Sous-titre Tarif global *</label>
+                                <input type="text" name="titre_tarif" value="<?= htmlspecialchars($clubData['inscription']['titre_tarif']) ?>" required>
                             </div>
                         </div>
 
                         <div id="container-paragraphes-inscription" style="display:flex; flex-direction:column; gap:12px;">
                             <?php foreach ($clubData['inscription']['paragraphes_intro'] as $numIn => $texteIn): ?>
-                                <div class="cms-field cms-paragraph-item" style="background:#f8fafc; padding:12px; border:1px solid #e2e8f0; border-radius:6px;">
+                                <div class="cms-field cms-paragraph-item" style="background:var(--ka-gris-back); padding:12px; border:1px solid var(--ka-gris-clair); border-radius:6px;">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                                         <label style="margin:0;">Paragraphe d'introduction <?= (int)$numIn + 1 ?></label>
                                         <?php if ($numIn > 0): ?>
@@ -939,13 +940,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
                         <div class="cms-field">
                             <label>Détail des cotisations (1 ligne par point)</label>
-                            <textarea name="lignes_tarif" rows="4"><?= htmlspecialchars(implode("\n", $clubData['inscription']['lignes_tarif'] ?? [])) ?></textarea>
+                            <textarea name="lignes_tarif" rows="4" required><?= htmlspecialchars(implode("\n", $clubData['inscription']['lignes_tarif'])) ?></textarea>
                         </div>
                         <div class="cms-form-row">
                             <div class="cms-field">
-                                <label>URL de l'espace Yapla du club (Optionnel)</label>
-                                <input type="url" name="yapla_url" value="<?= htmlspecialchars($clubData['inscription']['yapla_url'] ?? '') ?>" placeholder="https://...">
-                                <span class="cms-help">Laissez vide si le club n'utilise pas encore d'inscription en ligne Yapla.</span>
+                                <label>URL de l'espace Yapla du club *</label>
+                                <input type="url" name="yapla_url" value="<?= htmlspecialchars($yaplaUrl) ?>" required>
                             </div>
                             <div class="cms-field">
                                 <label>E-mail de contact en bas de bloc</label>
@@ -953,33 +953,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                             </div>
                         </div>
                         <div class="cms-actions">
-                            <button type="submit" class="btn-cms-save">💾 Enregistrer les tarifs & Yapla</button>
+                            <button type="submit" class="btn-cms-save">💾 Enregistrer les tarifs &amp; Yapla</button>
                         </div>
                     </form>
                 </details>
             <?php endif; ?>
 
-            <?php if (!empty($clubData['inscription']['yapla_url'])): ?>
-                <!-- Iframe de l'espace membre et d'adhésion Yapla -->
-                <h3 class="subtitle" style="text-align: center; margin-top: 30px;">💳 Inscription et paiement en ligne</h3>
-                <div class="yapla-iframe-wrapper">
-                    <iframe
-                        src="<?= htmlspecialchars($clubData['inscription']['yapla_url']) ?>"
-                        width="950"
-                        height="750"
-                        allow="payment"
-                        loading="lazy"
-                        title="Espace Membres et Adhésion Yapla - Les Kamikazes Agathois">
-                    </iframe>
-                </div>
+            <!-- Iframe de l'espace membre et d'adhésion Yapla -->
+            <h3 class="subtitle" style="text-align: center; margin-top: 30px;">💳 Inscription et paiement en ligne</h3>
+            <div class="yapla-iframe-wrapper">
+                <iframe
+                    src="<?= htmlspecialchars($yaplaUrl) ?>"
+                    width="950"
+                    height="750"
+                    allow="payment"
+                    loading="lazy"
+                    title="Espace Membres et Adhésion Yapla - Les Kamikazes Agathois">
+                </iframe>
+            </div>
 
-                <!-- Bouton d'ouverture directe du formulaire Yapla en plein écran -->
-                <div class="join-us-action">
-                    <a href="<?= htmlspecialchars($clubData['inscription']['yapla_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn-primary">
-                        🔗 Ouvrir le formulaire en plein écran
-                    </a>
-                </div>
-            <?php endif; ?>
+            <!-- Bouton d'ouverture directe du formulaire Yapla en plein écran -->
+            <div class="join-us-action">
+                <a href="<?= htmlspecialchars($yaplaUrl) ?>" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                    🔗 Ouvrir le formulaire en plein écran
+                </a>
+            </div>
 
             <p class="join-us-footer">
                 Des questions ? Contactez-nous à <a href="mailto:<?= htmlspecialchars($clubData['inscription']['email_contact']) ?>"><?= htmlspecialchars($clubData['inscription']['email_contact']) ?></a> ou venez nous rencontrer le week-end sur le terrain.
