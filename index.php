@@ -188,14 +188,14 @@ if ($estAdminOuBureau) {
     <meta name="description" content="Site officiel des Kamikazes Agathois - Club d'aéromodélisme à Agde (Hérault)">
     <title>Les Kamikazes Agathois - Aéromodélisme</title>
     <link rel="icon" type="image/png" href="IMG/favicon.png">
-    <link rel="stylesheet" href="CSS/style.css?v=7">
-    <link rel="stylesheet" href="CSS/accueil.css?v=7">
+    <link rel="stylesheet" href="CSS/style.css?v=8">
+    <link rel="stylesheet" href="CSS/accueil.css?v=8">
 </head>
 <body>
 
     <?php include 'header.php'; ?>
 
-    <!-- BANNIÈRE D'ACCUEIL AVEC LOGOS OLAP (GAUCHE) ET VILLE D'AGDE (DROITE) -->
+    <!-- BANNIÈRE D'ACCUEIL AVEC LOGOS OLAP (GAUCHE) ET KAMIKAZES AGATHOIS (DROITE) -->
     <section class="hero">
         <div class="hero-inner">
             <img src="IMG/OLAP_LOGO2.png" alt="Logo OLAP Aéromodélisme" class="hero-logo hero-logo-left">
@@ -206,7 +206,7 @@ if ($estAdminOuBureau) {
                 <a href="club.php#inscription" class="btn-primary"><?= htmlspecialchars($accueilData['hero_bouton_texte']) ?></a>
             </div>
 
-            <img src="IMG/LOGO_FFAM_CB.png" alt="Logo Ville d'Agde" class="hero-logo hero-logo-right">
+            <img src="IMG/Logo_Kamikazes_Header.png" alt="Logo Les Kamikazes Agathois" class="hero-logo hero-logo-right">
         </div>
     </section>
 
@@ -269,7 +269,7 @@ if ($estAdminOuBureau) {
             <h2>📅 Dates à retenir</h2>
 
             <?php if ($erreurDate): ?>
-                <p style="color: var(--smac-rouge); font-size: 0.9rem; font-weight: bold; margin-bottom: 12px;">
+                <p style="color: var(--ka-rouge); font-size: 0.9rem; font-weight: bold; margin-bottom: 12px;">
                     <?= htmlspecialchars($erreurDate) ?>
                 </p>
             <?php endif; ?>
