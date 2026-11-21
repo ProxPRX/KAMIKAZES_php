@@ -41,43 +41,149 @@ body {
     border-width: 0;
 }
 
-/* --- 3. EN-TÊTE : BANDEAU À GAUCHE & LOGO À DROITE (PROPORTIONNELS) --- */
+/* --- 3. EN-TÊTE : BANDEAU DYNAMIQUE AVEC AVION EN LOOPING --- */
 header {
-    background-color: var(--ka-blanc);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    background-color: var(--ka-bleu);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-.header-banner-wrapper {
-    background-color: var(--ka-blanc);
+.ka-dynamic-banner {
+    position: relative;
     width: 100%;
-    margin: 0;
-    padding: 0;
+    height: 175px;
     overflow: hidden;
+    background-color: var(--ka-bleu);
 }
 
-.header-logos-link {
+.ka-banner-link {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+}
+
+/* Fond avec zoom progressif lent (effet Ken Burns) */
+.ka-banner-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+    animation: kaKenBurns 18s ease-out forwards;
+}
+
+/* Léger voile dégradé pour garder le titre bien lisible sur l'image */
+.ka-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 45, 95, 0.62) 0%, rgba(0, 134, 255, 0.22) 55%, rgba(0, 0, 0, 0.08) 100%);
+    z-index: 1;
+}
+
+.ka-banner-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1180px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: min(145px, calc((100vw - 25px) * 145 / 980));
-    width: 100%;
-    text-decoration: none;
-    margin: 0;
-    padding-right: 2%;
+    gap: 20px;
 }
 
-.banner-main-img,
-.club-logo-side {
+.ka-banner-text {
+    max-width: 58%;
+    animation: kaTitleFadeIn 1.1s ease-out both;
+}
+
+.ka-banner-title {
+    display: block;
+    font-family: Impact, 'Arial Black', 'Segoe UI', sans-serif;
+    font-size: clamp(1.35rem, 3.6vw, 2.85rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.5px;
+    color: var(--ka-blanc);
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* Conteneur avion : arrivée depuis la gauche puis flottement léger */
+.ka-banner-plane-wrap {
+    height: 88%;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    animation:
+        kaPlaneFlyIn 1.65s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
+        kaPlaneFloat 3.4s ease-in-out 3.6s infinite;
+}
+
+/* Image avion : looping -360° dès son arrivée */
+.ka-banner-plane {
     height: 100%;
     width: auto;
+    max-width: 240px;
+    object-fit: contain;
     display: block;
-    flex-shrink: 0;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.28));
+    transform-origin: center center;
+    animation: kaPlaneLoop 1.9s ease-in-out 1.65s 1 forwards;
+}
+
+.ka-dynamic-banner:hover .ka-banner-plane {
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.38));
+}
+
+@keyframes kaKenBurns {
+    0%   { transform: scale(1); }
+    100% { transform: scale(1.14); }
+}
+
+@keyframes kaTitleFadeIn {
+    0%   { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kaPlaneFlyIn {
+    0%   { opacity: 0; transform: translateX(-75vw); }
+    15%  { opacity: 1; }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes kaPlaneLoop {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+@keyframes kaPlaneFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
 }
 
 @media (max-width: 768px) {
-    .header-logos-link {
-        height: min(145px, calc((100vw - 15px) * 145 / 980));
-        padding-right: 15px;
+    .ka-dynamic-banner {
+        height: 125px;
+    }
+
+    .ka-banner-inner {
+        padding: 0 15px;
+        gap: 10px;
+    }
+
+    .ka-banner-text {
+        max-width: 62%;
+    }
+
+    .ka-banner-plane-wrap {
+        height: 82%;
+    }
+
+    .ka-banner-plane {
+        max-width: 135px;
     }
 }
 
