@@ -118,26 +118,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         }
     }
 
-    // 3. Supprimer un Terrain ou un Gymnase
+    // 3. Supprimer un Terrain ou une Salle Indoor (sans blocage)
     elseif (in_array($action, ['supprimer_terrain', 'supprimer_gymnase'], true)) {
         $cleListe  = ($action === 'supprimer_terrain') ? 'terrains' : 'gymnases';
         $idElement = trim($_POST['element_id'] ?? '');
 
-        if (count($clubData[$cleListe]) <= 1) {
-            $messageErreur = "Il doit rester au minimum un élément dans cette section.";
-        } else {
-            foreach ($clubData[$cleListe] as $idx => $item) {
-                if (($item['id'] ?? '') === $idElement) {
-                    if (!empty($item['pdf_fichier'])) {
-                        supprimerFichierServeur($item['pdf_fichier']);
-                    }
-                    unset($clubData[$cleListe][$idx]);
-                    $clubData[$cleListe] = array_values($clubData[$cleListe]);
-                    $contenuSite['club'] = $clubData;
-                    sauvegarderContenuSite($contenuSite);
-                    $messageSucces = "🗑️ La section a bien été supprimée.";
-                    break;
+        foreach ($clubData[$cleListe] as $idx => $item) {
+            if (($item['id'] ?? '') === $idElement) {
+                if (!empty($item['pdf_fichier'])) {
+                    supprimerFichierServeur($item['pdf_fichier']);
                 }
+                unset($clubData[$cleListe][$idx]);
+                $clubData[$cleListe] = array_values($clubData[$cleListe]);
+                $contenuSite['club'] = $clubData;
+                sauvegarderContenuSite($contenuSite);
+                $messageSucces = "🗑️ Le bloc a bien été supprimé.";
+                break;
             }
         }
     }
@@ -388,135 +384,145 @@ if ($yaplaUrl === '') {
              SECTION 2 : TERRAIN(S) D'ÉVOLUTION EXTÉRIEUR
              ================================================================== -->
         <section id="terrain" class="club-section">
-            <?php foreach ($clubData['terrains'] as $indexT => $terrain): ?>
-                <div class="installation-block" style="<?= $indexT > 0 ? 'margin-top: 45px;' : '' ?>">
-                    <h2><?= htmlspecialchars($terrain['titre']) ?></h2>
-                    <div class="dashboard">
-                        <div class="info-box">
-                            <h3 class="info-box-title-red">🌳 Informations Pratiques</h3>
-                            <p><?= nl2br(htmlspecialchars($terrain['description'])) ?></p>
-                            <?php if (!empty($terrain['points'])): ?>
-                                <ul>
-                                    <?php foreach ($terrain['points'] as $pt): ?>
-                                        <li>
-                                            <?php
-                                                if (strpos($pt, ':') !== false) {
-                                                    list($labelPt, $restePt) = explode(':', $pt, 2);
-                                                    echo '<strong>' . htmlspecialchars($labelPt) . ' :</strong>' . htmlspecialchars($restePt);
-                                                } else {
-                                                    echo htmlspecialchars($pt);
-                                                }
-                                            ?>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
-                        </div>
+            <?php if (empty($clubData['terrains'])): ?>
+                <h2>Terrain d'évolution</h2>
+                <div class="info-box" style="text-align: center;">
+                    <p>Aucun terrain renseigné pour le moment.<?= $estAdmin ? ' Utilisez le bloc ci-dessous pour en ajouter un.' : '' ?></p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($clubData['terrains'] as $indexT => $terrain): ?>
+                    <div class="installation-block" style="<?= $indexT > 0 ? 'margin-top: 45px;' : '' ?>">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+                            <h2 style="margin-bottom:0;"><?= htmlspecialchars($terrain['titre']) ?></h2>
 
-                        <div class="info-box">
-                            <h3 class="info-box-title-red">📍 Localisation</h3>
-                            <?php if (!empty($terrain['gps_nord']) or !empty($terrain['gps_est'])): ?>
-                                <ul style="list-style-type: none; margin-bottom: 15px; margin-left: 0;">
-                                    <?php if (!empty($terrain['gps_nord'])): ?>
-                                        <li><strong>GPS Nord :</strong> <?= htmlspecialchars($terrain['gps_nord']) ?></li>
-                                    <?php endif; ?>
-                                    <?php if (!empty($terrain['gps_est'])): ?>
-                                        <li><strong>GPS Est :</strong> <?= htmlspecialchars($terrain['gps_est']) ?></li>
-                                    <?php endif; ?>
-                                </ul>
-                            <?php endif; ?>
-
-                            <?php if (!empty($terrain['maps_embed'])): ?>
-                                <iframe src="<?= htmlspecialchars($terrain['maps_embed']) ?>" width="100%" height="250" style="border:0; border-radius: 8px; margin-bottom: 15px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="<?= htmlspecialchars($terrain['titre']) ?>"></iframe>
-                            <?php endif; ?>
-
-                            <?php if (!empty($terrain['maps_lien'])): ?>
-                                <a href="<?= htmlspecialchars($terrain['maps_lien']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: block; text-align: center; margin-bottom: 10px;">Voir sur Google Maps</a>
-                            <?php endif; ?>
-
-                            <?php if (!empty($terrain['pdf_fichier'])): ?>
-                                <a href="<?= htmlspecialchars($terrain['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: var(--ka-gris-fonce); display: block; text-align: center; margin-top: 0;">
-                                    <?= htmlspecialchars(!empty($terrain['pdf_libelle']) ? $terrain['pdf_libelle'] : 'Télécharger le plan de vol (PDF)') ?>
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <?php if ($estAdmin): ?>
-                        <details class="cms-admin-details">
-                            <summary class="cms-admin-summary">✏️ Modifier « <?= htmlspecialchars($terrain['titre']) ?> » ou changer son PDF (Admin)</summary>
-                            <form method="POST" action="club.php#terrain" enctype="multipart/form-data" class="cms-admin-form">
-                                <input type="hidden" name="action_cms_club" value="sauvegarder_terrain">
-                                <input type="hidden" name="element_id" value="<?= htmlspecialchars($terrain['id']) ?>">
-
-                                <div class="cms-field">
-                                    <label>Titre du terrain *</label>
-                                    <input type="text" name="titre" value="<?= htmlspecialchars($terrain['titre']) ?>" required>
-                                </div>
-                                <div class="cms-field">
-                                    <label>Description *</label>
-                                    <textarea name="description" rows="2" required><?= htmlspecialchars($terrain['description']) ?></textarea>
-                                </div>
-                                <div class="cms-field">
-                                    <label>Liste des points pratiques (1 point par ligne)</label>
-                                    <textarea name="points" rows="4"><?= htmlspecialchars(implode("\n", $terrain['points'] ?? [])) ?></textarea>
-                                    <span class="cms-help">Astuce : Ce qui est placé avant les deux-points « : » (ex: <code>Pistes : 2 pistes goudronnées</code>) s'affichera automatiquement en gras.</span>
-                                </div>
-                                <div class="cms-form-row">
-                                    <div class="cms-field">
-                                        <label>GPS Nord</label>
-                                        <input type="text" name="gps_nord" value="<?= htmlspecialchars($terrain['gps_nord'] ?? '') ?>">
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>GPS Est</label>
-                                        <input type="text" name="gps_est" value="<?= htmlspecialchars($terrain['gps_est'] ?? '') ?>">
-                                    </div>
-                                </div>
-                                <div class="cms-form-row">
-                                    <div class="cms-field">
-                                        <label>Carte Google Maps (Adresse, coordonnées ou URL iframe)</label>
-                                        <input type="text" name="maps_embed" value="<?= htmlspecialchars($terrain['maps_embed'] ?? '') ?>">
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Lien du bouton « Voir sur Google Maps »</label>
-                                        <input type="url" name="maps_lien" value="<?= htmlspecialchars($terrain['maps_lien'] ?? '') ?>">
-                                    </div>
-                                </div>
-                                <div class="cms-form-row">
-                                    <div class="cms-field">
-                                        <label>Remplacer / Joindre un PDF (ex: Plan de vol)</label>
-                                        <input type="file" name="nouveau_pdf" accept="application/pdf,.pdf">
-                                        <?php if (!empty($terrain['pdf_fichier'])): ?>
-                                            <label style="font-weight:normal; margin-top:6px; cursor:pointer;">
-                                                <input type="checkbox" name="supprimer_pdf" value="1"> Supprimer le PDF actuel (<code><?= htmlspecialchars(basename($terrain['pdf_fichier'])) ?></code>)
-                                            </label>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Texte du bouton PDF</label>
-                                        <input type="text" name="pdf_libelle" value="<?= htmlspecialchars($terrain['pdf_libelle'] ?? 'Télécharger le plan de vol (PDF)') ?>">
-                                    </div>
-                                </div>
-                                <div class="cms-actions">
-                                    <button type="submit" class="btn-cms-save">💾 Enregistrer les modifications</button>
-                                </div>
-                            </form>
-
-                            <?php if (count($clubData['terrains']) > 1): ?>
-                                <form method="POST" action="club.php#terrain" style="padding: 0 20px 20px 20px;" onsubmit="return confirm('Supprimer définitivement ce terrain ?');">
+                            <?php if ($estAdmin): ?>
+                                <form method="POST" action="club.php#terrain" style="margin:0;" onsubmit="return confirm('Supprimer définitivement le bloc « <?= htmlspecialchars(addslashes($terrain['titre'])) ?> » ?');">
                                     <input type="hidden" name="action_cms_club" value="supprimer_terrain">
                                     <input type="hidden" name="element_id" value="<?= htmlspecialchars($terrain['id']) ?>">
-                                    <button type="submit" class="btn-cms-delete">🗑️ Supprimer ce terrain</button>
+                                    <button type="submit" class="btn-cms-delete" style="padding:6px 12px; font-size:0.82rem;">🗑️ Supprimer ce bloc</button>
                                 </form>
                             <?php endif; ?>
-                        </details>
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
+                        </div>
+
+                        <div class="dashboard">
+                            <div class="info-box">
+                                <h3 class="info-box-title-red">🌳 Informations Pratiques</h3>
+                                <p><?= nl2br(htmlspecialchars($terrain['description'])) ?></p>
+                                <?php if (!empty($terrain['points'])): ?>
+                                    <ul>
+                                        <?php foreach ($terrain['points'] as $pt): ?>
+                                            <li>
+                                                <?php
+                                                    if (strpos($pt, ':') !== false) {
+                                                        list($labelPt, $restePt) = explode(':', $pt, 2);
+                                                        echo '<strong>' . htmlspecialchars($labelPt) . ' :</strong>' . htmlspecialchars($restePt);
+                                                    } else {
+                                                        echo htmlspecialchars($pt);
+                                                    }
+                                                ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="info-box">
+                                <h3 class="info-box-title-red">📍 Localisation</h3>
+                                <?php if (!empty($terrain['gps_nord']) or !empty($terrain['gps_est'])): ?>
+                                    <ul style="list-style-type: none; margin-bottom: 15px; margin-left: 0;">
+                                        <?php if (!empty($terrain['gps_nord'])): ?>
+                                            <li><strong>GPS Nord :</strong> <?= htmlspecialchars($terrain['gps_nord']) ?></li>
+                                        <?php endif; ?>
+                                        <?php if (!empty($terrain['gps_est'])): ?>
+                                            <li><strong>GPS Est :</strong> <?= htmlspecialchars($terrain['gps_est']) ?></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                <?php endif; ?>
+
+                                <?php if (!empty($terrain['maps_embed'])): ?>
+                                    <iframe src="<?= htmlspecialchars($terrain['maps_embed']) ?>" width="100%" height="250" style="border:0; border-radius: 8px; margin-bottom: 15px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="<?= htmlspecialchars($terrain['titre']) ?>"></iframe>
+                                <?php endif; ?>
+
+                                <?php if (!empty($terrain['maps_lien'])): ?>
+                                    <a href="<?= htmlspecialchars($terrain['maps_lien']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: block; text-align: center; margin-bottom: 10px;">Voir sur Google Maps</a>
+                                <?php endif; ?>
+
+                                <?php if (!empty($terrain['pdf_fichier'])): ?>
+                                    <a href="<?= htmlspecialchars($terrain['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: var(--ka-gris-fonce); display: block; text-align: center; margin-top: 0;">
+                                        <?= htmlspecialchars(!empty($terrain['pdf_libelle']) ? $terrain['pdf_libelle'] : 'Télécharger le plan de vol (PDF)') ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <?php if ($estAdmin): ?>
+                            <details class="cms-admin-details">
+                                <summary class="cms-admin-summary">✏️ Modifier « <?= htmlspecialchars($terrain['titre']) ?> » ou changer son PDF (Admin)</summary>
+                                <form method="POST" action="club.php#terrain" enctype="multipart/form-data" class="cms-admin-form">
+                                    <input type="hidden" name="action_cms_club" value="sauvegarder_terrain">
+                                    <input type="hidden" name="element_id" value="<?= htmlspecialchars($terrain['id']) ?>">
+
+                                    <div class="cms-field">
+                                        <label>Titre du terrain *</label>
+                                        <input type="text" name="titre" value="<?= htmlspecialchars($terrain['titre']) ?>" required>
+                                    </div>
+                                    <div class="cms-field">
+                                        <label>Description *</label>
+                                        <textarea name="description" rows="2" required><?= htmlspecialchars($terrain['description']) ?></textarea>
+                                    </div>
+                                    <div class="cms-field">
+                                        <label>Liste des points pratiques (1 point par ligne)</label>
+                                        <textarea name="points" rows="4"><?= htmlspecialchars(implode("\n", $terrain['points'] ?? [])) ?></textarea>
+                                        <span class="cms-help">Astuce : Ce qui est placé avant les deux-points « : » (ex: <code>Pistes : 2 pistes goudronnées</code>) s'affichera automatiquement en gras.</span>
+                                    </div>
+                                    <div class="cms-form-row">
+                                        <div class="cms-field">
+                                            <label>GPS Nord</label>
+                                            <input type="text" name="gps_nord" value="<?= htmlspecialchars($terrain['gps_nord'] ?? '') ?>">
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>GPS Est</label>
+                                            <input type="text" name="gps_est" value="<?= htmlspecialchars($terrain['gps_est'] ?? '') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="cms-form-row">
+                                        <div class="cms-field">
+                                            <label>Carte Google Maps (Adresse, coordonnées ou URL iframe)</label>
+                                            <input type="text" name="maps_embed" value="<?= htmlspecialchars($terrain['maps_embed'] ?? '') ?>">
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>Lien du bouton « Voir sur Google Maps »</label>
+                                            <input type="url" name="maps_lien" value="<?= htmlspecialchars($terrain['maps_lien'] ?? '') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="cms-form-row">
+                                        <div class="cms-field">
+                                            <label>Remplacer / Joindre un PDF (ex: Plan de vol)</label>
+                                            <input type="file" name="nouveau_pdf" accept="application/pdf,.pdf">
+                                            <?php if (!empty($terrain['pdf_fichier'])): ?>
+                                                <label style="font-weight:normal; margin-top:6px; cursor:pointer;">
+                                                    <input type="checkbox" name="supprimer_pdf" value="1"> Supprimer le PDF actuel (<code><?= htmlspecialchars(basename($terrain['pdf_fichier'])) ?></code>)
+                                                </label>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>Texte du bouton PDF</label>
+                                            <input type="text" name="pdf_libelle" value="<?= htmlspecialchars($terrain['pdf_libelle'] ?? 'Télécharger le plan de vol (PDF)') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="cms-actions">
+                                        <button type="submit" class="btn-cms-save">💾 Enregistrer les modifications</button>
+                                    </div>
+                                </form>
+                            </details>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details cms-add-block">
-                    <summary class="cms-admin-summary">➕ Ajouter un autre terrain d'évolution extérieur (Admin)</summary>
+                    <summary class="cms-admin-summary">➕ Ajouter un terrain d'évolution extérieur (Admin)</summary>
                     <form method="POST" action="club.php#terrain" enctype="multipart/form-data" class="cms-admin-form">
                         <input type="hidden" name="action_cms_club" value="sauvegarder_terrain">
                         <div class="cms-field">
@@ -573,131 +579,141 @@ if ($yaplaUrl === '') {
              SECTION 3 : SALLE(S) DE VOL INDOOR (SALLES MOLINIÉ / CHARRIN...)
              ================================================================== -->
         <section id="gymnase" class="club-section">
-            <?php foreach ($clubData['gymnases'] as $indexG => $gymnase): ?>
-                <div class="installation-block" style="<?= $indexG > 0 ? 'margin-top: 45px;' : '' ?>">
-                    <h2><?= htmlspecialchars($gymnase['titre']) ?></h2>
-                    <div class="dashboard">
-                        <div class="info-box">
-                            <h3 class="info-box-title-red">🏛️ Équipements &amp; Accès</h3>
-                            <p><?= nl2br(htmlspecialchars($gymnase['description'])) ?></p>
-                            <?php if (!empty($gymnase['points'])): ?>
-                                <ul>
-                                    <?php foreach ($gymnase['points'] as $pt): ?>
-                                        <li>
-                                            <?php
-                                                if (strpos($pt, ':') !== false) {
-                                                    list($labelPt, $restePt) = explode(':', $pt, 2);
-                                                    echo '<strong>' . htmlspecialchars($labelPt) . ' :</strong>' . htmlspecialchars($restePt);
-                                                } else {
-                                                    echo '<em>' . htmlspecialchars($pt) . '</em>';
-                                                }
-                                            ?>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
-                        </div>
+            <?php if (empty($clubData['gymnases'])): ?>
+                <h2>Vol Indoor</h2>
+                <div class="info-box" style="text-align: center;">
+                    <p>Aucune salle indoor renseignée pour le moment.<?= $estAdmin ? ' Utilisez le bloc ci-dessous pour en ajouter une.' : '' ?></p>
+                </div>
+            <?php else: ?>
+                <?php foreach ($clubData['gymnases'] as $indexG => $gymnase): ?>
+                    <div class="installation-block" style="<?= $indexG > 0 ? 'margin-top: 45px;' : '' ?>">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+                            <h2 style="margin-bottom:0;"><?= htmlspecialchars($gymnase['titre']) ?></h2>
 
-                        <div class="info-box">
-                            <h3 class="info-box-title-red">📍 Localisation</h3>
-                            <?php if (!empty($gymnase['gps_nord']) or !empty($gymnase['gps_est'])): ?>
-                                <ul style="list-style-type: none; margin-bottom: 15px; margin-left: 0;">
-                                    <?php if (!empty($gymnase['gps_nord'])): ?>
-                                        <li><strong>GPS Nord :</strong> <?= htmlspecialchars($gymnase['gps_nord']) ?></li>
-                                    <?php endif; ?>
-                                    <?php if (!empty($gymnase['gps_est'])): ?>
-                                        <li><strong>GPS Est :</strong> <?= htmlspecialchars($gymnase['gps_est']) ?></li>
-                                    <?php endif; ?>
-                                </ul>
-                            <?php endif; ?>
-
-                            <?php if (!empty($gymnase['maps_embed'])): ?>
-                                <iframe src="<?= htmlspecialchars($gymnase['maps_embed']) ?>" width="100%" height="250" style="border:0; border-radius: 8px; margin-bottom: 15px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="<?= htmlspecialchars($gymnase['titre']) ?>"></iframe>
-                            <?php endif; ?>
-
-                            <?php if (!empty($gymnase['maps_lien'])): ?>
-                                <a href="<?= htmlspecialchars($gymnase['maps_lien']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: block; text-align: center; margin-top: 0; margin-bottom: 10px;">Voir sur Google Maps</a>
-                            <?php endif; ?>
-
-                            <?php if (!empty($gymnase['pdf_fichier'])): ?>
-                                <a href="<?= htmlspecialchars($gymnase['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: var(--ka-gris-fonce); display: block; text-align: center; margin-top: 0;">
-                                    <?= htmlspecialchars(!empty($gymnase['pdf_libelle']) ? $gymnase['pdf_libelle'] : 'Télécharger le document (PDF)') ?>
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <?php if ($estAdmin): ?>
-                        <details class="cms-admin-details">
-                            <summary class="cms-admin-summary">✏️ Modifier « <?= htmlspecialchars($gymnase['titre']) ?> » (Horaires, accès, carte...) (Admin)</summary>
-                            <form method="POST" action="club.php#gymnase" enctype="multipart/form-data" class="cms-admin-form">
-                                <input type="hidden" name="action_cms_club" value="sauvegarder_gymnase">
-                                <input type="hidden" name="element_id" value="<?= htmlspecialchars($gymnase['id']) ?>">
-
-                                <div class="cms-field">
-                                    <label>Nom du gymnase / de la salle *</label>
-                                    <input type="text" name="titre" value="<?= htmlspecialchars($gymnase['titre']) ?>" required>
-                                </div>
-                                <div class="cms-field">
-                                    <label>Adresse / Description *</label>
-                                    <textarea name="description" rows="2" required><?= htmlspecialchars($gymnase['description']) ?></textarea>
-                                </div>
-                                <div class="cms-field">
-                                    <label>Horaires, surface &amp; équipements (1 ligne par point)</label>
-                                    <textarea name="points" rows="5"><?= htmlspecialchars(implode("\n", $gymnase['points'] ?? [])) ?></textarea>
-                                    <span class="cms-help">Ex: <code>Adresse : 7 Avenue Jean Moulin, 34300 Agde.</code></span>
-                                </div>
-                                <div class="cms-form-row">
-                                    <div class="cms-field">
-                                        <label>GPS Nord</label>
-                                        <input type="text" name="gps_nord" value="<?= htmlspecialchars($gymnase['gps_nord'] ?? '') ?>">
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>GPS Est</label>
-                                        <input type="text" name="gps_est" value="<?= htmlspecialchars($gymnase['gps_est'] ?? '') ?>">
-                                    </div>
-                                </div>
-                                <div class="cms-form-row">
-                                    <div class="cms-field">
-                                        <label>Carte Google Maps (Adresse, coordonnées ou URL iframe)</label>
-                                        <input type="text" name="maps_embed" value="<?= htmlspecialchars($gymnase['maps_embed'] ?? '') ?>">
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Lien du bouton « Voir sur Google Maps »</label>
-                                        <input type="url" name="maps_lien" value="<?= htmlspecialchars($gymnase['maps_lien'] ?? '') ?>">
-                                    </div>
-                                </div>
-                                <div class="cms-form-row">
-                                    <div class="cms-field">
-                                        <label>Joindre / Remplacer un PDF (Optionnel)</label>
-                                        <input type="file" name="nouveau_pdf" accept="application/pdf,.pdf">
-                                        <?php if (!empty($gymnase['pdf_fichier'])): ?>
-                                            <label style="font-weight:normal; margin-top:6px; cursor:pointer;">
-                                                <input type="checkbox" name="supprimer_pdf" value="1"> Supprimer le PDF actuel
-                                            </label>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Texte du bouton PDF</label>
-                                        <input type="text" name="pdf_libelle" value="<?= htmlspecialchars($gymnase['pdf_libelle'] ?? 'Télécharger le document (PDF)') ?>">
-                                    </div>
-                                </div>
-                                <div class="cms-actions">
-                                    <button type="submit" class="btn-cms-save">💾 Enregistrer cette salle</button>
-                                </div>
-                            </form>
-
-                            <?php if (count($clubData['gymnases']) > 1): ?>
-                                <form method="POST" action="club.php#gymnase" style="padding: 0 20px 20px 20px;" onsubmit="return confirm('Supprimer définitivement cette salle ?');">
+                            <?php if ($estAdmin): ?>
+                                <form method="POST" action="club.php#gymnase" style="margin:0;" onsubmit="return confirm('Supprimer définitivement le bloc « <?= htmlspecialchars(addslashes($gymnase['titre'])) ?> » ?');">
                                     <input type="hidden" name="action_cms_club" value="supprimer_gymnase">
                                     <input type="hidden" name="element_id" value="<?= htmlspecialchars($gymnase['id']) ?>">
-                                    <button type="submit" class="btn-cms-delete">🗑️ Supprimer cette salle</button>
+                                    <button type="submit" class="btn-cms-delete" style="padding:6px 12px; font-size:0.82rem;">🗑️ Supprimer ce bloc</button>
                                 </form>
                             <?php endif; ?>
-                        </details>
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
+                        </div>
+
+                        <div class="dashboard">
+                            <div class="info-box">
+                                <h3 class="info-box-title-red">🏛️ Équipements &amp; Accès</h3>
+                                <p><?= nl2br(htmlspecialchars($gymnase['description'])) ?></p>
+                                <?php if (!empty($gymnase['points'])): ?>
+                                    <ul>
+                                        <?php foreach ($gymnase['points'] as $pt): ?>
+                                            <li>
+                                                <?php
+                                                    if (strpos($pt, ':') !== false) {
+                                                        list($labelPt, $restePt) = explode(':', $pt, 2);
+                                                        echo '<strong>' . htmlspecialchars($labelPt) . ' :</strong>' . htmlspecialchars($restePt);
+                                                    } else {
+                                                        echo '<em>' . htmlspecialchars($pt) . '</em>';
+                                                    }
+                                                ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="info-box">
+                                <h3 class="info-box-title-red">📍 Localisation</h3>
+                                <?php if (!empty($gymnase['gps_nord']) or !empty($gymnase['gps_est'])): ?>
+                                    <ul style="list-style-type: none; margin-bottom: 15px; margin-left: 0;">
+                                        <?php if (!empty($gymnase['gps_nord'])): ?>
+                                            <li><strong>GPS Nord :</strong> <?= htmlspecialchars($gymnase['gps_nord']) ?></li>
+                                        <?php endif; ?>
+                                        <?php if (!empty($gymnase['gps_est'])): ?>
+                                            <li><strong>GPS Est :</strong> <?= htmlspecialchars($gymnase['gps_est']) ?></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                <?php endif; ?>
+
+                                <?php if (!empty($gymnase['maps_embed'])): ?>
+                                    <iframe src="<?= htmlspecialchars($gymnase['maps_embed']) ?>" width="100%" height="250" style="border:0; border-radius: 8px; margin-bottom: 15px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="<?= htmlspecialchars($gymnase['titre']) ?>"></iframe>
+                                <?php endif; ?>
+
+                                <?php if (!empty($gymnase['maps_lien'])): ?>
+                                    <a href="<?= htmlspecialchars($gymnase['maps_lien']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: block; text-align: center; margin-top: 0; margin-bottom: 10px;">Voir sur Google Maps</a>
+                                <?php endif; ?>
+
+                                <?php if (!empty($gymnase['pdf_fichier'])): ?>
+                                    <a href="<?= htmlspecialchars($gymnase['pdf_fichier']) ?>" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="background-color: var(--ka-gris-fonce); display: block; text-align: center; margin-top: 0;">
+                                        <?= htmlspecialchars(!empty($gymnase['pdf_libelle']) ? $gymnase['pdf_libelle'] : 'Télécharger le document (PDF)') ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <?php if ($estAdmin): ?>
+                            <details class="cms-admin-details">
+                                <summary class="cms-admin-summary">✏️ Modifier « <?= htmlspecialchars($gymnase['titre']) ?> » (Horaires, accès, carte...) (Admin)</summary>
+                                <form method="POST" action="club.php#gymnase" enctype="multipart/form-data" class="cms-admin-form">
+                                    <input type="hidden" name="action_cms_club" value="sauvegarder_gymnase">
+                                    <input type="hidden" name="element_id" value="<?= htmlspecialchars($gymnase['id']) ?>">
+
+                                    <div class="cms-field">
+                                        <label>Nom du gymnase / de la salle *</label>
+                                        <input type="text" name="titre" value="<?= htmlspecialchars($gymnase['titre']) ?>" required>
+                                    </div>
+                                    <div class="cms-field">
+                                        <label>Adresse / Description *</label>
+                                        <textarea name="description" rows="2" required><?= htmlspecialchars($gymnase['description']) ?></textarea>
+                                    </div>
+                                    <div class="cms-field">
+                                        <label>Horaires, surface &amp; équipements (1 ligne par point)</label>
+                                        <textarea name="points" rows="5"><?= htmlspecialchars(implode("\n", $gymnase['points'] ?? [])) ?></textarea>
+                                        <span class="cms-help">Ex: <code>Adresse : 7 Avenue Jean Moulin, 34300 Agde.</code></span>
+                                    </div>
+                                    <div class="cms-form-row">
+                                        <div class="cms-field">
+                                            <label>GPS Nord</label>
+                                            <input type="text" name="gps_nord" value="<?= htmlspecialchars($gymnase['gps_nord'] ?? '') ?>">
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>GPS Est</label>
+                                            <input type="text" name="gps_est" value="<?= htmlspecialchars($gymnase['gps_est'] ?? '') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="cms-form-row">
+                                        <div class="cms-field">
+                                            <label>Carte Google Maps (Adresse, coordonnées ou URL iframe)</label>
+                                            <input type="text" name="maps_embed" value="<?= htmlspecialchars($gymnase['maps_embed'] ?? '') ?>">
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>Lien du bouton « Voir sur Google Maps »</label>
+                                            <input type="url" name="maps_lien" value="<?= htmlspecialchars($gymnase['maps_lien'] ?? '') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="cms-form-row">
+                                        <div class="cms-field">
+                                            <label>Joindre / Remplacer un PDF (Optionnel)</label>
+                                            <input type="file" name="nouveau_pdf" accept="application/pdf,.pdf">
+                                            <?php if (!empty($gymnase['pdf_fichier'])): ?>
+                                                <label style="font-weight:normal; margin-top:6px; cursor:pointer;">
+                                                    <input type="checkbox" name="supprimer_pdf" value="1"> Supprimer le PDF actuel
+                                                </label>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>Texte du bouton PDF</label>
+                                            <input type="text" name="pdf_libelle" value="<?= htmlspecialchars($gymnase['pdf_libelle'] ?? 'Télécharger le document (PDF)') ?>">
+                                        </div>
+                                    </div>
+                                    <div class="cms-actions">
+                                        <button type="submit" class="btn-cms-save">💾 Enregistrer cette salle</button>
+                                    </div>
+                                </form>
+                            </details>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details cms-add-block">
