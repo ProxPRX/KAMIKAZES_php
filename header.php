@@ -19,14 +19,6 @@ $roleAffiche       = strtoupper(str_replace('_', ' ', (string)$role));
 ?>
 
 <header>
-    <!-- Bandeau principal à gauche et logo du club aligné à droite à la même hauteur -->
-    <div class="header-banner-wrapper">
-        <a href="index.php" class="header-logos-link">
-            <img src="IMG/kamikazes_bandeau.png" alt="Les Kamikazes Agathois - Club d'Aéromodélisme à Agde" class="banner-main-img">
-            <img src="IMG/Logo_Kamikazes_Header.png" alt="Logo Les Kamikazes Agathois" class="club-logo-side">
-        </a>
-    </div>
-
     <!-- Barre de navigation principale -->
     <nav class="navbar">
         <ul>
