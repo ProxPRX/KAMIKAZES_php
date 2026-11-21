@@ -67,21 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         }
     }
 
-    // 3. Supprimer une carte de discipline
+    // 3. Supprimer une carte de discipline (sans blocage)
     elseif ($action === 'supprimer_pratique') {
         $idPrat = trim($_POST['pratique_id'] ?? '');
-        if (count($actData['pratiques']) <= 1) {
-            $messageErreur = "Il doit rester au minimum une carte d'activité.";
-        } else {
-            foreach ($actData['pratiques'] as $idx => $p) {
-                if (($p['id'] ?? '') === $idPrat) {
-                    unset($actData['pratiques'][$idx]);
-                    $actData['pratiques']     = array_values($actData['pratiques']);
-                    $contenuSite['activites'] = $actData;
-                    sauvegarderContenuSite($contenuSite);
-                    $messageSucces = "🗑️ La carte d'activité a été supprimée.";
-                    break;
-                }
+        foreach ($actData['pratiques'] as $idx => $p) {
+            if (($p['id'] ?? '') === $idPrat) {
+                unset($actData['pratiques'][$idx]);
+                $actData['pratiques']     = array_values($actData['pratiques']);
+                $contenuSite['activites'] = $actData;
+                sauvegarderContenuSite($contenuSite);
+                $messageSucces = "🗑️ La carte d'activité a été supprimée.";
+                break;
             }
         }
     }
@@ -205,28 +201,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
         }
     }
 
-    // 8. Supprimer un bloc événement complet
+    // 8. Supprimer un bloc événement complet (sans blocage)
     elseif ($action === 'supprimer_evenement') {
         $idEvt = trim($_POST['evenement_id'] ?? '');
-        if (count($actData['evenements']) <= 1) {
-            $messageErreur = "Il doit rester au minimum un événement dans cette section.";
-        } else {
-            foreach ($actData['evenements'] as $idx => $ev) {
-                if (($ev['id'] ?? '') === $idEvt) {
-                    if (!empty($ev['image']) and is_file($ev['image'])) {
-                        @unlink($ev['image']);
-                    }
-                    $cheminFixe = $dossierDecorActivites . '/' . preg_replace('/[^a-zA-Z0-9_\-]/', '', $idEvt) . '.jpg';
-                    if (is_file($cheminFixe)) {
-                        @unlink($cheminFixe);
-                    }
-                    unset($actData['evenements'][$idx]);
-                    $actData['evenements']    = array_values($actData['evenements']);
-                    $contenuSite['activites'] = $actData;
-                    sauvegarderContenuSite($contenuSite);
-                    $messageSucces = "🗑️ L'événement a bien été supprimé.";
-                    break;
+        foreach ($actData['evenements'] as $idx => $ev) {
+            if (($ev['id'] ?? '') === $idEvt) {
+                if (!empty($ev['image']) and is_file($ev['image'])) {
+                    @unlink($ev['image']);
                 }
+                $cheminFixe = $dossierDecorActivites . '/' . preg_replace('/[^a-zA-Z0-9_\-]/', '', $idEvt) . '.jpg';
+                if (is_file($cheminFixe)) {
+                    @unlink($cheminFixe);
+                }
+                unset($actData['evenements'][$idx]);
+                $actData['evenements']    = array_values($actData['evenements']);
+                $contenuSite['activites'] = $actData;
+                sauvegarderContenuSite($contenuSite);
+                $messageSucces = "🗑️ Le bloc événement a bien été supprimé.";
+                break;
             }
         }
     }
@@ -240,8 +232,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
     <meta name="description" content="Découvrez les activités des Kamikazes Agathois : planeurs, avions, hélicoptères, multirotors, vol indoor et nos événements.">
     <title>Activités - Les Kamikazes Agathois</title>
     <link rel="icon" type="image/png" href="IMG/favicon.png">
-    <link rel="stylesheet" href="CSS/style.css?v=7">
-    <link rel="stylesheet" href="CSS/activites.css?v=7">
+    <link rel="stylesheet" href="CSS/style.css?v=8">
+    <link rel="stylesheet" href="CSS/activites.css?v=8">
 </head>
 <body>
 
@@ -269,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
              ================================================================== -->
         <section class="practices-section" id="pratiques">
             <h2>Ce que nous faisons</h2>
-            <p style="margin-bottom: 30px; font-size: 1.1rem; color: #555;">
+            <p style="margin-bottom: 30px; font-size: 1.1rem; color: var(--ka-gris-fonce);">
                 <?= htmlspecialchars($actData['pratiques_intro']) ?>
             </p>
 
@@ -289,47 +281,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                 </details>
             <?php endif; ?>
 
-            <div class="practices-grid">
-                <?php foreach ($actData['pratiques'] as $pratique): ?>
-                    <div class="practice-card">
-                        <div class="practice-icon"><?= htmlspecialchars($pratique['icone']) ?></div>
-                        <h3><?= htmlspecialchars($pratique['titre']) ?></h3>
-                        <p><?= nl2br(htmlspecialchars($pratique['description'])) ?></p>
+            <?php if (empty($actData['pratiques'])): ?>
+                <div class="info-box" style="text-align: center;">
+                    <p>Aucune discipline enregistrée pour le moment.<?= $estAdmin ? ' Utilisez le bloc ci-dessous pour en ajouter une.' : '' ?></p>
+                </div>
+            <?php else: ?>
+                <div class="practices-grid">
+                    <?php foreach ($actData['pratiques'] as $pratique): ?>
+                        <div class="practice-card">
+                            <div class="practice-icon"><?= htmlspecialchars($pratique['icone']) ?></div>
+                            <h3><?= htmlspecialchars($pratique['titre']) ?></h3>
+                            <p><?= nl2br(htmlspecialchars($pratique['description'])) ?></p>
 
-                        <?php if ($estAdmin): ?>
-                            <details class="cms-admin-details" style="margin-top: 15px; margin-bottom: 0;">
-                                <summary class="cms-admin-summary" style="font-size: 0.82rem; padding: 7px 12px;">✏️ Modifier cette carte</summary>
-                                <form method="POST" action="activites.php#pratiques" class="cms-admin-form" style="padding: 12px;">
-                                    <input type="hidden" name="action_cms_activites" value="sauvegarder_pratique">
-                                    <input type="hidden" name="pratique_id" value="<?= htmlspecialchars($pratique['id']) ?>">
-                                    <div class="cms-field">
-                                        <label>Icône (Emoji)</label>
-                                        <input type="text" name="icone" value="<?= htmlspecialchars($pratique['icone']) ?>" required>
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Titre *</label>
-                                        <input type="text" name="titre" value="<?= htmlspecialchars($pratique['titre']) ?>" required>
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Description *</label>
-                                        <textarea name="description" rows="4" required><?= htmlspecialchars($pratique['description']) ?></textarea>
-                                    </div>
-                                    <div class="cms-actions">
-                                        <button type="submit" class="btn-cms-save" style="width:100%;">💾 Enregistrer</button>
-                                    </div>
-                                </form>
-                                <?php if (count($actData['pratiques']) > 1): ?>
-                                    <form method="POST" action="activites.php#pratiques" style="padding: 0 12px 12px 12px;" onsubmit="return confirm('Supprimer cette carte d\'activité ?');">
+                            <?php if ($estAdmin): ?>
+                                <div style="margin-top: 15px;">
+                                    <form method="POST" action="activites.php#pratiques" style="margin-bottom: 10px;" onsubmit="return confirm('Supprimer définitivement le bloc « <?= htmlspecialchars(addslashes($pratique['titre'])) ?> » ?');">
                                         <input type="hidden" name="action_cms_activites" value="supprimer_pratique">
                                         <input type="hidden" name="pratique_id" value="<?= htmlspecialchars($pratique['id']) ?>">
-                                        <button type="submit" class="btn-cms-delete" style="width:100%;">🗑️ Supprimer</button>
+                                        <button type="submit" class="btn-cms-delete" style="width: 100%; padding: 6px 12px; font-size: 0.82rem;">🗑️ Supprimer ce bloc</button>
                                     </form>
-                                <?php endif; ?>
-                            </details>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+
+                                    <details class="cms-admin-details" style="margin-top: 0; margin-bottom: 0;">
+                                        <summary class="cms-admin-summary" style="font-size: 0.82rem; padding: 7px 12px;">✏️ Modifier cette carte</summary>
+                                        <form method="POST" action="activites.php#pratiques" class="cms-admin-form" style="padding: 12px;">
+                                            <input type="hidden" name="action_cms_activites" value="sauvegarder_pratique">
+                                            <input type="hidden" name="pratique_id" value="<?= htmlspecialchars($pratique['id']) ?>">
+                                            <div class="cms-field">
+                                                <label>Icône (Emoji)</label>
+                                                <input type="text" name="icone" value="<?= htmlspecialchars($pratique['icone']) ?>" required>
+                                            </div>
+                                            <div class="cms-field">
+                                                <label>Titre *</label>
+                                                <input type="text" name="titre" value="<?= htmlspecialchars($pratique['titre']) ?>" required>
+                                            </div>
+                                            <div class="cms-field">
+                                                <label>Description *</label>
+                                                <textarea name="description" rows="4" required><?= htmlspecialchars($pratique['description']) ?></textarea>
+                                            </div>
+                                            <div class="cms-actions">
+                                                <button type="submit" class="btn-cms-save" style="width:100%;">💾 Enregistrer</button>
+                                            </div>
+                                        </form>
+                                    </details>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details cms-add-block" style="margin-top: 25px;">
@@ -362,8 +361,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
              SECTION 2 : TEMPS FORTS ET ÉVÉNEMENTS ANNUELS (AVEC PHOTOS DE DÉCOR)
              ================================================================== -->
         <section class="events-section" id="evenements">
-            <h2>Événements & Convivialité</h2>
-            <p style="margin-bottom: 40px; font-size: 1.1rem; color: #555;">
+            <h2>Événements &amp; Convivialité</h2>
+            <p style="margin-bottom: 40px; font-size: 1.1rem; color: var(--ka-gris-fonce);">
                 <?= htmlspecialchars($actData['evenements_intro']) ?>
             </p>
 
@@ -383,99 +382,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                 </details>
             <?php endif; ?>
 
-            <div class="events-timeline">
-                <?php foreach ($actData['evenements'] as $evt): ?>
-                    <?php
-                        $idEvtPropre   = preg_replace('/[^a-zA-Z0-9_\-]/', '', $evt['id']);
-                        $cheminParId   = $dossierDecorActivites . '/' . $idEvtPropre . '.jpg';
-                        $cheminImgEvt  = (!empty($evt['image']) and is_file($evt['image']))
-                            ? $evt['image']
-                            : (is_file($cheminParId) ? $cheminParId : '');
-                        $aPhotoEvt     = ($cheminImgEvt !== '');
-                        $urlPhotoEvt   = $aPhotoEvt ? $cheminImgEvt . '?v=' . filemtime($cheminImgEvt) : '';
-                        $texteGrisEvt  = !empty($evt['placeholder']) ? $evt['placeholder'] : ('Photo ' . $evt['titre']);
-                    ?>
-                    <div>
-                        <div class="event-item">
-                            <div class="event-media-col">
-                                <?php if ($aPhotoEvt): ?>
-                                    <div class="event-image has-photo" onclick="ouvrirLightbox('<?= htmlspecialchars($urlPhotoEvt, ENT_QUOTES) ?>')" title="Cliquez pour agrandir">
-                                        <img src="<?= htmlspecialchars($urlPhotoEvt) ?>" alt="<?= htmlspecialchars($evt['titre']) ?>" loading="lazy">
-                                    </div>
-                                <?php else: ?>
-                                    <div class="event-image placeholder-img"><?= htmlspecialchars($texteGrisEvt) ?></div>
-                                <?php endif; ?>
+            <?php if (empty($actData['evenements'])): ?>
+                <div class="info-box" style="text-align: center;">
+                    <p>Aucun événement enregistré pour le moment.<?= $estAdmin ? ' Utilisez le bloc ci-dessous pour en créer un.' : '' ?></p>
+                </div>
+            <?php else: ?>
+                <div class="events-timeline">
+                    <?php foreach ($actData['evenements'] as $evt): ?>
+                        <?php
+                            $idEvtPropre  = preg_replace('/[^a-zA-Z0-9_\-]/', '', $evt['id']);
+                            $cheminParId  = $dossierDecorActivites . '/' . $idEvtPropre . '.jpg';
+                            $cheminImgEvt = (!empty($evt['image']) and is_file($evt['image']))
+                                ? $evt['image']
+                                : (is_file($cheminParId) ? $cheminParId : '');
+                            $aPhotoEvt    = ($cheminImgEvt !== '');
+                            $urlPhotoEvt  = $aPhotoEvt ? $cheminImgEvt . '?v=' . filemtime($cheminImgEvt) : '';
+                            $texteGrisEvt = !empty($evt['placeholder']) ? $evt['placeholder'] : ('Photo ' . $evt['titre']);
+                        ?>
+                        <div>
+                            <div class="event-item">
+                                <div class="event-media-col">
+                                    <?php if ($aPhotoEvt): ?>
+                                        <div class="event-image has-photo" onclick="ouvrirLightbox('<?= htmlspecialchars($urlPhotoEvt, ENT_QUOTES) ?>')" title="Cliquez pour agrandir">
+                                            <img src="<?= htmlspecialchars($urlPhotoEvt) ?>" alt="<?= htmlspecialchars($evt['titre']) ?>" loading="lazy">
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="event-image placeholder-img"><?= htmlspecialchars($texteGrisEvt) ?></div>
+                                    <?php endif; ?>
 
-                                <?php if ($estAdmin): ?>
-                                    <div class="event-admin-bar">
-                                        <form method="POST" action="activites.php#evenements" enctype="multipart/form-data" class="event-admin-form">
-                                            <input type="hidden" name="action_cms_activites" value="upload_photo_evenement">
-                                            <input type="hidden" name="evenement_id" value="<?= htmlspecialchars($evt['id']) ?>">
-                                            <label class="btn-decor-upload">
-                                                📷 <?= $aPhotoEvt ? 'Changer la photo' : 'Mettre une photo' ?>
-                                                <input type="file" name="photo_decor" accept="image/jpeg,image/png,image/webp" onchange="this.form.submit()" hidden>
-                                            </label>
-                                        </form>
-
-                                        <?php if ($aPhotoEvt): ?>
-                                            <form method="POST" action="activites.php#evenements" onsubmit="return confirm('Supprimer cette photo et revenir au bloc gris « <?= htmlspecialchars(addslashes($texteGrisEvt)) ?> » ?');">
-                                                <input type="hidden" name="action_cms_activites" value="supprimer_photo_evenement">
+                                    <?php if ($estAdmin): ?>
+                                        <div class="event-admin-bar">
+                                            <form method="POST" action="activites.php#evenements" enctype="multipart/form-data" class="event-admin-form">
+                                                <input type="hidden" name="action_cms_activites" value="upload_photo_evenement">
                                                 <input type="hidden" name="evenement_id" value="<?= htmlspecialchars($evt['id']) ?>">
-                                                <button type="submit" class="btn-decor-delete" title="Retirer la photo">🗑️ Supprimer la photo</button>
+                                                <label class="btn-decor-upload">
+                                                    📷 <?= $aPhotoEvt ? 'Changer la photo' : 'Mettre une photo' ?>
+                                                    <input type="file" name="photo_decor" accept="image/jpeg,image/png,image/webp" onchange="this.form.submit()" hidden>
+                                                </label>
+                                            </form>
+
+                                            <?php if ($aPhotoEvt): ?>
+                                                <form method="POST" action="activites.php#evenements" onsubmit="return confirm('Supprimer cette photo et revenir au bloc gris « <?= htmlspecialchars(addslashes($texteGrisEvt)) ?> » ?');">
+                                                    <input type="hidden" name="action_cms_activites" value="supprimer_photo_evenement">
+                                                    <input type="hidden" name="evenement_id" value="<?= htmlspecialchars($evt['id']) ?>">
+                                                    <button type="submit" class="btn-decor-delete" title="Retirer la photo">🗑️ Supprimer la photo</button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="event-details">
+                                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; width:100%; flex-wrap:wrap;">
+                                        <span class="event-date"><?= htmlspecialchars($evt['periode']) ?></span>
+
+                                        <?php if ($estAdmin): ?>
+                                            <form method="POST" action="activites.php#evenements" style="margin:0;" onsubmit="return confirm('Supprimer définitivement le bloc « <?= htmlspecialchars(addslashes($evt['titre'])) ?> » ?');">
+                                                <input type="hidden" name="action_cms_activites" value="supprimer_evenement">
+                                                <input type="hidden" name="evenement_id" value="<?= htmlspecialchars($evt['id']) ?>">
+                                                <button type="submit" class="btn-cms-delete" style="padding:5px 10px; font-size:0.78rem;">🗑️ Supprimer ce bloc</button>
                                             </form>
                                         <?php endif; ?>
                                     </div>
-                                <?php endif; ?>
+                                    <h3><?= htmlspecialchars($evt['titre']) ?></h3>
+                                    <p><?= nl2br(htmlspecialchars($evt['description'])) ?></p>
+                                </div>
                             </div>
 
-                            <div class="event-details">
-                                <span class="event-date"><?= htmlspecialchars($evt['periode']) ?></span>
-                                <h3><?= htmlspecialchars($evt['titre']) ?></h3>
-                                <p><?= nl2br(htmlspecialchars($evt['description'])) ?></p>
-                            </div>
-                        </div>
-
-                        <?php if ($estAdmin): ?>
-                            <details class="cms-admin-details" style="margin-top: 8px; margin-bottom: 0;">
-                                <summary class="cms-admin-summary">✏️ Modifier le texte de « <?= htmlspecialchars($evt['titre']) ?> » (Admin)</summary>
-                                <form method="POST" action="activites.php#evenements" enctype="multipart/form-data" class="cms-admin-form">
-                                    <input type="hidden" name="action_cms_activites" value="sauvegarder_evenement">
-                                    <input type="hidden" name="evenement_id" value="<?= htmlspecialchars($evt['id']) ?>">
-                                    <div class="cms-form-row">
-                                        <div class="cms-field">
-                                            <label>Badge de période *</label>
-                                            <input type="text" name="periode" value="<?= htmlspecialchars($evt['periode']) ?>" required>
-                                        </div>
-                                        <div class="cms-field">
-                                            <label>Titre de l'événement *</label>
-                                            <input type="text" name="titre" value="<?= htmlspecialchars($evt['titre']) ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Description *</label>
-                                        <textarea name="description" rows="3" required><?= htmlspecialchars($evt['description']) ?></textarea>
-                                    </div>
-                                    <div class="cms-field">
-                                        <label>Texte affiché sur le fond gris si aucune photo n'est mise</label>
-                                        <input type="text" name="placeholder" value="<?= htmlspecialchars($texteGrisEvt) ?>">
-                                    </div>
-                                    <div class="cms-actions">
-                                        <button type="submit" class="btn-cms-save">💾 Enregistrer les modifications</button>
-                                    </div>
-                                </form>
-
-                                <?php if (count($actData['evenements']) > 1): ?>
-                                    <form method="POST" action="activites.php#evenements" style="padding: 0 20px 20px 20px;" onsubmit="return confirm('Supprimer définitivement cet événement ?');">
-                                        <input type="hidden" name="action_cms_activites" value="supprimer_evenement">
+                            <?php if ($estAdmin): ?>
+                                <details class="cms-admin-details" style="margin-top: 8px; margin-bottom: 0;">
+                                    <summary class="cms-admin-summary">✏️ Modifier le texte de « <?= htmlspecialchars($evt['titre']) ?> » (Admin)</summary>
+                                    <form method="POST" action="activites.php#evenements" enctype="multipart/form-data" class="cms-admin-form">
+                                        <input type="hidden" name="action_cms_activites" value="sauvegarder_evenement">
                                         <input type="hidden" name="evenement_id" value="<?= htmlspecialchars($evt['id']) ?>">
-                                        <button type="submit" class="btn-cms-delete">🗑️ Supprimer cet événement</button>
+                                        <div class="cms-form-row">
+                                            <div class="cms-field">
+                                                <label>Badge de période *</label>
+                                                <input type="text" name="periode" value="<?= htmlspecialchars($evt['periode']) ?>" required>
+                                            </div>
+                                            <div class="cms-field">
+                                                <label>Titre de l'événement *</label>
+                                                <input type="text" name="titre" value="<?= htmlspecialchars($evt['titre']) ?>" required>
+                                            </div>
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>Description *</label>
+                                            <textarea name="description" rows="3" required><?= htmlspecialchars($evt['description']) ?></textarea>
+                                        </div>
+                                        <div class="cms-field">
+                                            <label>Texte affiché sur le fond gris si aucune photo n'est mise</label>
+                                            <input type="text" name="placeholder" value="<?= htmlspecialchars($texteGrisEvt) ?>">
+                                        </div>
+                                        <div class="cms-actions">
+                                            <button type="submit" class="btn-cms-save">💾 Enregistrer les modifications</button>
+                                        </div>
                                     </form>
-                                <?php endif; ?>
-                            </details>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+                                </details>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details cms-add-block" style="margin-top: 30px;">
