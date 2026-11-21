@@ -1,6 +1,6 @@
 <?php
 // ==========================================================================
-// PAGE LIENS UTILES & PARTENAIRES (AVEC GESTION ADMIN SANS CODE)
+// PAGE LIENS UTILES (AVEC GESTION ADMIN SANS CODE DES CATÉGORIES & LIENS)
 // ==========================================================================
 require_once 'PHP/db.php';
 
@@ -136,21 +136,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Partenaires, liens utiles et fédérations du club d'aéromodélisme Les Kamikazes Agathois.">
-    <title>Liens &amp; Partenaires - Les Kamikazes Agathois</title>
+    <meta name="description" content="Liens utiles, réglementation et ressources aéromodélisme du club Les Kamikazes Agathois.">
+    <title>Liens Utiles - Les Kamikazes Agathois</title>
     <link rel="icon" type="image/png" href="IMG/favicon.png">
-    <link rel="stylesheet" href="CSS/style.css?v=7">
-    <link rel="stylesheet" href="CSS/liens.css?v=7">
+    <link rel="stylesheet" href="CSS/style.css?v=8">
+    <link rel="stylesheet" href="CSS/liens.css?v=8">
 </head>
 <body>
 
     <?php include 'header.php'; ?>
 
-    <!-- BANNIÈRE LIENS UTILES & PARTENAIRES -->
+    <!-- BANNIÈRE LIENS UTILES -->
     <section class="hero liens-hero">
         <div class="hero-content">
-            <h2>Liens &amp; Partenaires</h2>
-            <p>Nos partenaires locaux, fédérations et ressources aéromodélisme.</p>
+            <h2>Liens Utiles</h2>
+            <p>Institutions, réglementation et forums de passionnés.</p>
         </div>
     </section>
 
@@ -181,8 +181,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
                                     <?php if ($estAdmin): ?>
                                         <details style="margin-top: 8px;">
-                                            <summary style="cursor: pointer; font-size: 0.8rem; color: var(--smac-bleu-fonce); font-weight: bold;">✏️ Modifier / Supprimer ce lien</summary>
-                                            <div style="background: var(--smac-gris-clair); padding: 10px; border-radius: 6px; margin-top: 6px; border: 1px solid var(--smac-gris-bordure);">
+                                            <summary style="cursor: pointer; font-size: 0.8rem; color: var(--ka-bleu); font-weight: bold;">✏️ Modifier / Supprimer ce lien</summary>
+                                            <div style="background: var(--ka-gris-back); padding: 10px; border-radius: 6px; margin-top: 6px; border: 1px solid var(--ka-gris-clair);">
                                                 <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;">
                                                     <input type="hidden" name="action_cms_liens" value="sauvegarder_lien">
                                                     <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
@@ -209,10 +209,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
                             <details class="cms-admin-details" style="margin-top: 20px; margin-bottom: 0;">
                                 <summary class="cms-admin-summary" style="font-size: 0.85rem;">➕ Ajouter un lien ou gérer cette catégorie (Admin)</summary>
                                 <div class="cms-admin-form" style="padding: 15px;">
-                                    <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:10px; padding-bottom:15px; border-bottom:1px dashed var(--smac-gris-bordure);">
+                                    <form method="POST" action="liens.php" style="display:flex; flex-direction:column; gap:10px; padding-bottom:15px; border-bottom:1px dashed var(--ka-gris-clair);">
                                         <input type="hidden" name="action_cms_liens" value="sauvegarder_lien">
                                         <input type="hidden" name="cat_id" value="<?= htmlspecialchars($categorie['id']) ?>">
-                                        <strong style="color:var(--smac-bleu-fonce); font-size:0.9rem;">➕ Ajouter un nouveau lien ici :</strong>
+                                        <strong style="color:var(--ka-bleu); font-size:0.9rem;">➕ Ajouter un nouveau lien ici :</strong>
                                         <div class="cms-field">
                                             <label>Nom du site *</label>
                                             <input type="text" name="titre" required placeholder="Ex: Météo France">
@@ -254,17 +254,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' and $estAdmin and isset($_POST['action
 
             <?php if ($estAdmin): ?>
                 <details class="cms-admin-details cms-add-block" style="margin-top: 35px;">
-                    <summary class="cms-admin-summary">➕ Créer une nouvelle catégorie de liens (ex: 🤝 Nos Partenaires) (Admin)</summary>
+                    <summary class="cms-admin-summary">➕ Créer une nouvelle catégorie de liens (ex: 🛒 Boutiques &amp; Matériel) (Admin)</summary>
                     <form method="POST" action="liens.php" class="cms-admin-form">
                         <input type="hidden" name="action_cms_liens" value="ajouter_categorie">
                         <div class="cms-field">
                             <label>Titre de la nouvelle catégorie *</label>
-                            <input type="text" name="titre_categorie" required placeholder="Ex: 🤝 Nos Partenaires Locaux">
+                            <input type="text" name="titre_categorie" required placeholder="Ex: 🛒 Boutiques & Simulateurs">
                         </div>
                         <div class="cms-form-row">
                             <div class="cms-field">
                                 <label>Titre du 1er lien *</label>
-                                <input type="text" name="premier_lien_titre" required placeholder="Ex: Ville d'Agde">
+                                <input type="text" name="premier_lien_titre" required placeholder="Ex: Simulateur Heli-X">
                             </div>
                             <div class="cms-field">
                                 <label>URL du 1er lien *</label>
