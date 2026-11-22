@@ -231,7 +231,6 @@ function supprimerFichierServeur($cheminFichier) {
         $dossierParent = dirname($cheminFichier);
         @unlink($cheminFichier);
 
-        // Si le sous-dossier d'article/publication ne contient plus que le .htaccess de protection, on le nettoie aussi
         if (is_dir($dossierParent) and preg_match('#^(IMG|DOCS)/\d{4}/(articles|membres)/[^/]+$#', $dossierParent)) {
             $restants = array_values(array_diff(@scandir($dossierParent) ?: [], ['.', '..']));
             if ($restants === ['.htaccess']) {
@@ -266,7 +265,6 @@ function appliquerProtectionMediaEnregistrement($imagePrincipale, $galerieBrute,
     $dossiers = [];
     foreach ($chemins as $c) {
         $dir = dirname($c);
-        // Sécurité : uniquement dans un sous-dossier spécifique d'article ou de publication membre
         if (preg_match('#^(IMG|DOCS)/\d{4}/(articles|membres)/[^/]+$#', $dir) and is_dir($dir)) {
             $dossiers[$dir] = true;
         }
@@ -364,7 +362,39 @@ function convertirDateExcelYapla($valeur) {
     return $dateSql;
 }
 
-// Lit nativement un fichier .xlsx exporté depuis Yapla
+// Normalise un en-tête de colonne Excel (sans accents, minuscules, apostrophes uniformisées)
+function normaliserEnteteExcelYapla($titreCol) {
+    $texte = str_replace(["\u{2019}", "\u{2018}", '`', '´'], "'", (string)$titreCol);
+    $texte = strtolower(supprimerAccents($texte));
+    return trim(preg_replace('/\s+/', ' ', $texte));
+}
+
+// Détecte une colonne par analyse du contenu réel des lignes si l'en-tête a été renommé dans Yapla
+function detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, callable $testValeur) {
+    $meilleureCol = null;
+    $meilleurScore = 0;
+
+    foreach ($entetesNorm as $lettre => $titreNorm) {
+        if (strpos($titreNorm, 'parent -') === 0 or strpos($titreNorm, 'parent ') === 0) {
+            continue;
+        }
+        $score = 0;
+        foreach ($lignesDonnees as $ligne) {
+            $val = trim((string)($ligne[$lettre] ?? ''));
+            if ($val !== '' and $testValeur($val)) {
+                $score++;
+            }
+        }
+        if ($score > $meilleurScore) {
+            $meilleurScore = $score;
+            $meilleureCol  = $lettre;
+        }
+    }
+
+    return $meilleurScore > 0 ? $meilleureCol : null;
+}
+
+// Lit nativement un fichier .xlsx exporté depuis Yapla (détection robuste par en-têtes + contenu)
 function lireFichierExcelYapla($cheminFichier) {
     if (!class_exists('ZipArchive') or !is_file($cheminFichier)) {
         return false;
@@ -397,6 +427,15 @@ function lireFichierExcelYapla($cheminFichier) {
     }
 
     $xmlSheet = $zip->getFromName('xl/worksheets/sheet1.xml');
+    if ($xmlSheet === false) {
+        for ($idxZip = 0; $idxZip < $zip->numFiles; $idxZip++) {
+            $nomEntree = $zip->getNameIndex($idxZip);
+            if (preg_match('#^xl/worksheets/sheet\d+\.xml$#i', $nomEntree)) {
+                $xmlSheet = $zip->getFromIndex($idxZip);
+                break;
+            }
+        }
+    }
     $zip->close();
 
     if ($xmlSheet === false) {
@@ -448,49 +487,120 @@ function lireFichierExcelYapla($cheminFichier) {
     $colStatut        = null;
     $colExpiration    = null;
 
-    $entetes = $lignesBrutes[0];
+    $entetes     = $lignesBrutes[0];
+    $entetesNorm = [];
     foreach ($entetes as $lettre => $titreCol) {
-        $titrePropre = strtolower(supprimerAccents($titreCol));
+        $entetesNorm[$lettre] = normaliserEnteteExcelYapla($titreCol);
+    }
 
-        if ($colNumAdherent === null and strpos($titrePropre, 'adherent') !== false) {
+    // Passe 1 : détection souple par nom d'en-tête (en excluant systématiquement les colonnes "Parent -")
+    foreach ($entetesNorm as $lettre => $titrePropre) {
+        if (strpos($titrePropre, 'parent -') === 0 or strpos($titrePropre, 'parent ') === 0) {
+            continue;
+        }
+
+        if ($colNumAdherent === null and (
+            strpos($titrePropre, 'adherent') !== false or
+            strpos($titrePropre, 'n° de membre') !== false or
+            strpos($titrePropre, 'no de membre') !== false or
+            strpos($titrePropre, 'numero de membre') !== false or
+            strpos($titrePropre, 'licence') !== false
+        )) {
             $colNumAdherent = $lettre;
         } elseif ($colPrenom === null and ($titrePropre === 'membre - prenom' or $titrePropre === 'prenom')) {
             $colPrenom = $lettre;
         } elseif ($colNom === null and ($titrePropre === 'membre - nom' or $titrePropre === 'nom')) {
             $colNom = $lettre;
-        } elseif ($colEmail === null and ($titrePropre === 'membre - courriel' or $titrePropre === 'courriel')) {
+        } elseif ($colEmail === null and in_array($titrePropre, ['membre - courriel', 'courriel', 'membre - email', 'email', 'e-mail', 'mail'], true)) {
             $colEmail = $lettre;
-        } elseif ($colPhoto === null and strpos($titrePropre, 'photo d\'identite') !== false) {
+        } elseif ($colPhoto === null and (
+            strpos($titrePropre, 'photo') !== false or
+            strpos($titrePropre, 'portrait') !== false or
+            strpos($titrePropre, 'avatar') !== false
+        )) {
             $colPhoto = $lettre;
-        } elseif (strpos($titrePropre, 'date de naissance') !== false) {
+        } elseif (
+            strpos($titrePropre, 'naissance') !== false or
+            strpos($titrePropre, 'ne(e) le') !== false or
+            strpos($titrePropre, 'nee le') !== false or
+            strpos($titrePropre, 'ne le') !== false
+        ) {
             $colsNaissance[] = $lettre;
-        } elseif ($colFormationUas === null and strpos($titrePropre, 'formation de telepilote') !== false) {
+        } elseif ($colFormationUas === null and (
+            strpos($titrePropre, 'telepilote') !== false or
+            (strpos($titrePropre, 'formation') !== false and strpos($titrePropre, 'date') !== false)
+        )) {
             $colFormationUas = $lettre;
-        } elseif ($colNumUas === null and strpos($titrePropre, 'uas') !== false and strpos($titrePropre, 'validation') === false) {
-            $colNumUas = $lettre;
-        } elseif ($colValidationUas === null and strpos($titrePropre, 'validation uas') !== false) {
+        } elseif ($colValidationUas === null and strpos($titrePropre, 'uas') !== false and (
+            strpos($titrePropre, 'validation') !== false or
+            strpos($titrePropre, 'validite') !== false or
+            strpos($titrePropre, 'date') !== false
+        )) {
             $colValidationUas = $lettre;
-        } elseif ($colTypeAdhesion === null and strpos($titrePropre, 'type d\'adhesion') !== false) {
+        } elseif ($colNumUas === null and strpos($titrePropre, 'uas') !== false and
+            strpos($titrePropre, 'validation') === false and
+            strpos($titrePropre, 'validite') === false and
+            strpos($titrePropre, 'date') === false
+        ) {
+            $colNumUas = $lettre;
+        } elseif ($colTypeAdhesion === null and (
+            strpos($titrePropre, "type d'adhesion") !== false or
+            strpos($titrePropre, 'type adhesion') !== false or
+            strpos($titrePropre, 'formule') !== false
+        )) {
             $colTypeAdhesion = $lettre;
-        } elseif ($colStatut === null and strpos($titrePropre, 'statut d\'adhesion') !== false) {
+        } elseif ($colStatut === null and (
+            strpos($titrePropre, "statut d'adhesion") !== false or
+            strpos($titrePropre, 'statut adhesion') !== false
+        )) {
             $colStatut = $lettre;
-        } elseif ($colExpiration === null and strpos($titrePropre, 'expiration de l\'adhesion') !== false) {
+        } elseif ($colExpiration === null and (
+            strpos($titrePropre, 'expiration') !== false or
+            strpos($titrePropre, "fin de l'adhesion") !== false or
+            strpos($titrePropre, 'fin adhesion') !== false
+        )) {
             $colExpiration = $lettre;
         }
     }
 
-    if ($colNumAdherent === null) $colNumAdherent = 'A';
-    if ($colPrenom === null)      $colPrenom      = 'B';
-    if ($colNom === null)         $colNom         = 'C';
-    if ($colEmail === null)       $colEmail       = 'D';
-    if ($colStatut === null)      $colStatut      = 'F';
-    if ($colExpiration === null)  $colExpiration  = 'I';
+    // Passe 2 : auto-détection par le contenu si un en-tête a été renommé dans Yapla
+    $lignesDonnees = array_slice($lignesBrutes, 1);
+
+    if ($colNumAdherent === null) {
+        $colNumAdherent = detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, function ($v) {
+            return (bool)preg_match('/^APHD-\d{2}-\d{2}-\d{3}$/i', $v);
+        }) ?? 'A';
+    }
+    if ($colPhoto === null) {
+        $colPhoto = detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, function ($v) {
+            return (bool)preg_match('#^https?://.+(/member/images/|\.(jpg|jpeg|png|webp)(\?.*)?$)#i', $v);
+        });
+    }
+    if ($colNumUas === null) {
+        $colNumUas = detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, function ($v) {
+            return (bool)preg_match('/^FRA[a-z0-9]{0,20}$/i', $v);
+        });
+    }
+    if ($colEmail === null) {
+        $colEmail = detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, function ($v) {
+            return strpos($v, '@') !== false and strpos($v, '.') !== false;
+        }) ?? 'D';
+    }
+    if ($colStatut === null) {
+        $colStatut = detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, function ($v) {
+            $n = strtolower(supprimerAccents($v));
+            return in_array($n, ['validee', 'valide', 'en attente de validation', 'en attente'], true);
+        }) ?? 'F';
+    }
+
+    if ($colPrenom === null)     $colPrenom     = 'B';
+    if ($colNom === null)        $colNom        = 'C';
+    if ($colExpiration === null) $colExpiration = 'I';
 
     $colNaissanceMembre = !empty($colsNaissance) ? end($colsNaissance) : null;
 
     $adherentsYapla = [];
-    for ($i = 1; $i < count($lignesBrutes); $i++) {
-        $l          = $lignesBrutes[$i];
+    foreach ($lignesDonnees as $l) {
         $numLicence = strtoupper(trim($l[$colNumAdherent] ?? ''));
         $prenom     = trim($l[$colPrenom] ?? '');
         $nom        = strtoupper(trim($l[$colNom] ?? ''));
@@ -728,7 +838,6 @@ function fusionnerContenuSiteSansEcraserListes($defaut, $decode) {
         return $decode;
     }
 
-    // Si la valeur par défaut est une liste indexée (0, 1, 2...), la liste du JSON fait foi intégralement (même vide)
     $estListeDefaut = ($defaut === [] or array_keys($defaut) === range(0, count($defaut) - 1));
     if ($estListeDefaut) {
         return array_values($decode);
@@ -956,7 +1065,6 @@ function chargerContenuSite() {
         return $defaut;
     }
 
-    // Rétrocompatibilité des anciens champs paragraphe unique
     if (isset($decode['club']['presentation']['paragraphe_1']) and empty($decode['club']['presentation']['paragraphes'])) {
         $decode['club']['presentation']['paragraphes'] = array_values(array_filter([
             trim($decode['club']['presentation']['paragraphe_1'] ?? ''),
@@ -970,10 +1078,8 @@ function chargerContenuSite() {
         $decode['club']['inscription']['paragraphes_intro'] = [trim($decode['club']['inscription']['texte_intro'])];
     }
 
-    // Fusion sécurisée qui ne réinjecte jamais les blocs ou liens supprimés
     $fusion = fusionnerContenuSiteSansEcraserListes($defaut, $decode);
 
-    // Purge automatique d'une éventuelle ancienne catégorie "Nos Partenaires Locaux"
     if (isset($fusion['liens']['categories']) and is_array($fusion['liens']['categories'])) {
         $catsFiltrees = array_values(array_filter($fusion['liens']['categories'], function ($cat) {
             return ($cat['id'] ?? '') !== 'cat_partenaires';
