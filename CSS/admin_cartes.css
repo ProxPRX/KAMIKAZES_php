@@ -220,11 +220,11 @@ body {
     background: #ffffff;
 }
 
-/* Colonne gauche : Logo Kamikazes agrandi (33mm x 25mm) + Prénom / NOM en bas */
+/* Colonne gauche : Logo Kamikazes (33mm x 25mm) dans l'angle gauche, légèrement plus bas + Prénom / NOM en bas */
 .col-logo-name {
     position: absolute;
-    left: 1.5mm;
-    top: 1.2mm;
+    left: 1mm;
+    top: 3.5mm;
     bottom: 1mm;
     width: 33mm;
     display: flex;
@@ -245,7 +245,7 @@ body {
 .card-member-names {
     margin-top: auto;
     padding-bottom: 0.4mm;
-    padding-left: 1mm;
+    padding-left: 1.5mm;
     line-height: 1.22;
     width: 76mm;
     position: relative;
@@ -271,24 +271,27 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Bloc central : Textes officiels décalés proprement à droite du grand logo */
+/* Bloc central : Textes officiels décalés proprement à droite du logo (Saison 2027 centré sur toute la carte) */
 .col-club-details {
     margin-left: 34mm;
+    padding-top: 4.8mm;
     display: flex;
     flex-direction: column;
     gap: 0.75mm;
-    position: relative;
     z-index: 2;
 }
 
 .txt-saison {
+    position: absolute;
+    top: 1.4mm;
+    left: 0;
+    right: 0;
     font-size: 10.5pt;
     font-weight: bold;
     color: #0070C0;
     text-align: center;
-    width: 52mm;
-    margin-bottom: 0.35mm;
     white-space: nowrap;
+    z-index: 3;
 }
 
 .txt-club-full {
@@ -378,7 +381,7 @@ body {
     flex-shrink: 0;
     border: 1px solid #bbbbbb;
     border-left: none;
-    padding: 1.5mm 3.5mm 1.5mm 4mm;
+    padding: 1.5mm 2mm 1.5mm 4mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -390,8 +393,8 @@ body {
 
 .card-right-top {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-end;
+    align-items: flex-start;
 }
 
 .card-olap-logo {
