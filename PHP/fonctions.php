@@ -5,16 +5,28 @@
 
 // --- 1. FORMATAGE DES DATES, RÔLES ET NOMS D'AUTEURS ---
 
-// Convertit une date SQL (YYYY-MM-DD) au format français (JJ/MM/AAAA)
+// Convertit une date SQL (YYYY-MM-DD) au format français (JJ/MM/AAAA) — compatible dates avant 1970
 function formaterDate($dateSql) {
     if (empty($dateSql)) return '';
-    return date('d/m/Y', strtotime($dateSql));
+    try {
+        $dt = new DateTimeImmutable((string)$dateSql);
+        return $dt->format('d/m/Y');
+    } catch (Exception $e) {
+        $ts = strtotime((string)$dateSql);
+        return $ts !== false ? date('d/m/Y', $ts) : '';
+    }
 }
 
 // Convertit une date/heure SQL au format français (JJ/MM/AAAA à HH:MM) pour le forum
 function formaterDateHeure($dateSql) {
     if (empty($dateSql)) return '';
-    return date('d/m/Y à H:i', strtotime($dateSql));
+    try {
+        $dt = new DateTimeImmutable((string)$dateSql);
+        return $dt->format('d/m/Y à H:i');
+    } catch (Exception $e) {
+        $ts = strtotime((string)$dateSql);
+        return $ts !== false ? date('d/m/Y à H:i', $ts) : '';
+    }
 }
 
 // Affiche "Prénom N." (compatible UTF-8) ou un texte par défaut si le compte du membre a été supprimé
@@ -334,7 +346,7 @@ function genererIdentifiantUnique($pdo, $prenom, $nom) {
     }
 }
 
-// Convertit une valeur de date Excel au format SQL YYYY-MM-DD
+// Convertit une valeur de date Excel au format SQL YYYY-MM-DD (compatible dates avant 1970 et tous séparateurs)
 function convertirDateExcelYapla($valeur) {
     $valeur = trim((string)$valeur);
     if ($valeur === '') {
@@ -346,13 +358,21 @@ function convertirDateExcelYapla($valeur) {
     if (is_numeric($valeur)) {
         $nb = (float)$valeur;
         if ($nb > 3000 and $nb < 100000) {
-            $timestamp = (int)round(($nb - 25569) * 86400);
-            $dateSql = gmdate('Y-m-d', $timestamp);
+            try {
+                $base = new DateTimeImmutable('1899-12-30', new DateTimeZone('UTC'));
+                $dateSql = $base->modify('+' . (int)round($nb) . ' days')->format('Y-m-d');
+            } catch (Exception $e) {
+                $dateSql = null;
+            }
         }
-    } elseif (preg_match('/^(\d{4}-\d{2}-\d{2})/', $valeur, $m)) {
-        $dateSql = $m[1];
-    } elseif (preg_match('#^(\d{2})/(\d{2})/(\d{4})#', $valeur, $m)) {
-        $dateSql = $m[3] . '-' . $m[2] . '-' . $m[1];
+    } elseif (preg_match('#^(\d{4})[/\-\.](\d{1,2})[/\-\.](\d{1,2})#', $valeur, $m)) {
+        if (checkdate((int)$m[2], (int)$m[3], (int)$m[1])) {
+            $dateSql = sprintf('%04d-%02d-%02d', (int)$m[1], (int)$m[2], (int)$m[3]);
+        }
+    } elseif (preg_match('#^(\d{1,2})[/\-\.](\d{1,2})[/\-\.](\d{4})#', $valeur, $m)) {
+        if (checkdate((int)$m[2], (int)$m[1], (int)$m[3])) {
+            $dateSql = sprintf('%04d-%02d-%02d', (int)$m[3], (int)$m[2], (int)$m[1]);
+        }
     }
 
     if ($dateSql === '1900-01-01' or $dateSql === '1899-12-30') {
@@ -371,7 +391,7 @@ function normaliserEnteteExcelYapla($titreCol) {
 
 // Détecte une colonne par analyse du contenu réel des lignes si l'en-tête a été renommé dans Yapla
 function detecterColonneParContenuYapla($lignesDonnees, $entetesNorm, callable $testValeur) {
-    $meilleureCol = null;
+    $meilleureCol  = null;
     $meilleurScore = 0;
 
     foreach ($entetesNorm as $lettre => $titreNorm) {
@@ -520,10 +540,16 @@ function lireFichierExcelYapla($cheminFichier) {
         )) {
             $colPhoto = $lettre;
         } elseif (
-            strpos($titrePropre, 'naissance') !== false or
-            strpos($titrePropre, 'ne(e) le') !== false or
-            strpos($titrePropre, 'nee le') !== false or
-            strpos($titrePropre, 'ne le') !== false
+            strpos($titrePropre, 'connaissance') === false and (
+                strpos($titrePropre, 'naissance') !== false or
+                strpos($titrePropre, 'naiss') !== false or
+                strpos($titrePropre, 'anniversaire') !== false or
+                strpos($titrePropre, 'ddn') !== false or
+                strpos($titrePropre, 'birth') !== false or
+                strpos($titrePropre, 'ne(e) le') !== false or
+                strpos($titrePropre, 'nee le') !== false or
+                strpos($titrePropre, 'ne le') !== false
+            )
         ) {
             $colsNaissance[] = $lettre;
         } elseif ($colFormationUas === null and (
@@ -597,7 +623,26 @@ function lireFichierExcelYapla($cheminFichier) {
     if ($colNom === null)        $colNom        = 'C';
     if ($colExpiration === null) $colExpiration = 'I';
 
-    $colNaissanceMembre = !empty($colsNaissance) ? end($colsNaissance) : null;
+    // Sélection de la colonne naissance : prend la dernière colonne qui contient réellement des dates valides
+    $colNaissanceMembre = null;
+    if (!empty($colsNaissance)) {
+        $anneeMax = (int)date('Y');
+        foreach ($colsNaissance as $colCand) {
+            foreach ($lignesDonnees as $ligneTest) {
+                $dTest = convertirDateExcelYapla($ligneTest[$colCand] ?? '');
+                if ($dTest !== null) {
+                    $an = (int)substr($dTest, 0, 4);
+                    if ($an >= 1910 and $an <= $anneeMax) {
+                        $colNaissanceMembre = $colCand;
+                        break;
+                    }
+                }
+            }
+        }
+        if ($colNaissanceMembre === null) {
+            $colNaissanceMembre = end($colsNaissance);
+        }
+    }
 
     $adherentsYapla = [];
     foreach ($lignesDonnees as $l) {
