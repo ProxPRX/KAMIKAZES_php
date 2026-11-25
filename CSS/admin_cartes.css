@@ -215,18 +215,18 @@ body {
 
 .card-left-body {
     position: relative;
-    padding: 1.8mm 2.5mm 1mm 2.5mm;
+    padding: 1.8mm 2mm 1mm 2mm;
     flex: 1;
     background: #ffffff;
 }
 
-/* Colonne gauche : Logo du club agrandi sur fond blanc + Prénom / NOM en bas */
+/* Colonne gauche : Logo Kamikazes agrandi (33mm x 25mm) + Prénom / NOM en bas */
 .col-logo-name {
     position: absolute;
-    left: 1.8mm;
-    top: 1.5mm;
+    left: 1.5mm;
+    top: 1.2mm;
     bottom: 1mm;
-    width: 26mm;
+    width: 33mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -234,9 +234,10 @@ body {
 }
 
 .card-club-logo {
-    width: 25.5mm;
-    height: 20.5mm;
+    width: 33mm;
+    height: 25mm;
     object-fit: contain;
+    object-position: left top;
     background: #ffffff;
     display: block;
 }
@@ -270,9 +271,9 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Bloc central : Textes officiels alignés comme le modèle PDF */
+/* Bloc central : Textes officiels décalés proprement à droite du grand logo */
 .col-club-details {
-    margin-left: 26.5mm;
+    margin-left: 34mm;
     display: flex;
     flex-direction: column;
     gap: 0.75mm;
@@ -285,13 +286,13 @@ body {
     font-weight: bold;
     color: #0070C0;
     text-align: center;
-    width: 54mm;
+    width: 52mm;
     margin-bottom: 0.35mm;
     white-space: nowrap;
 }
 
 .txt-club-full {
-    font-size: 7.3pt;
+    font-size: 7.1pt;
     font-weight: bold;
     color: #555555;
     line-height: 1.15;
@@ -306,7 +307,7 @@ body {
 }
 
 .txt-club-red {
-    font-size: 9.6pt;
+    font-size: 9.4pt;
     font-weight: bold;
     color: #FF0000;
     margin-top: 0.25mm;
@@ -357,7 +358,7 @@ body {
     min-height: 7.2mm;
     display: flex;
     align-items: center;
-    padding: 0 3mm 0 28.5mm;
+    padding: 0 3mm 0 26mm;
 }
 
 .txt-licence-bottom {
