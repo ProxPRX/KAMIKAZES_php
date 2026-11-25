@@ -1,6 +1,7 @@
 <?php
 // ==========================================================================
-// GÉNÉRATEUR DE CARTES D'ADHÉRENTS (ADMIN : PLANCHE / MEMBRE : CARTE PERSO) - LES KAMIKAZES AGATHOIS
+// GÉNÉRATEUR DE CARTES D'ADHÉRENTS (ADMIN : PLANCHE / MEMBRE : CARTE PERSO)
+// LES KAMIKAZES AGATHOIS
 // ==========================================================================
 require_once 'PHP/db.php';
 
@@ -16,11 +17,13 @@ $role        = $_SESSION['membre']['role'] ?? null;
 $estAdmin    = ($role === 'admin');
 $modeMaCarte = isset($_GET['ma_carte']);
 
+// Si un non-admin tente d'accéder à la planche complète sans ?ma_carte=1, redirection vers sa propre carte
 if (!$modeMaCarte and !$estAdmin) {
     header('Location: admin_cartes.php?ma_carte=1');
     exit;
 }
 
+// Calcul de la saison par défaut (à partir de septembre, propose l'année suivante)
 $saisonDefaut = ((int)date('n') >= 9) ? ((int)date('Y') + 1) : (int)date('Y');
 $saison       = trim($_GET['saison'] ?? $_POST['saison'] ?? (string)$saisonDefaut);
 if (!preg_match('/^\d{4}$/', $saison)) {
@@ -66,19 +69,37 @@ if ($modeMaCarte) {
     }
 }
 
-// Sélection automatique du logo du club
-$cheminLogoClub    = 'IMG/Logo_Kamikazes.png';
-$emplacementsLogos = [
+// --- 2. DÉTECTION AUTOMATIQUE DES LOGOS (IMG/ EN PRIORITÉ, PUIS IMG/LOGOS/) ---
+function trouverLogoCarte($cheminsPossibles, $defaut) {
+    foreach ($cheminsPossibles as $chemin) {
+        if (is_file($chemin)) {
+            return str_replace(' ', '%20', $chemin);
+        }
+    }
+    return str_replace(' ', '%20', $defaut);
+}
+
+$cheminLogoClub = trouverLogoCarte([
     'IMG/Logo_Kamikazes.png',
+    'IMG/LOGOS/logo_kamikazes.png',
+    'IMG/LOGOS/Logo_Kamikazes.png',
     'IMG/logos/Logo_Kamikazes.png',
     'IMG/logo.png'
-];
-foreach ($emplacementsLogos as $testLogo) {
-    if (is_file($testLogo)) {
-        $cheminLogoClub = str_replace(' ', '%20', $testLogo);
-        break;
-    }
-}
+], 'IMG/Logo_Kamikazes.png');
+
+$cheminLogoOlap = trouverLogoCarte([
+    'IMG/OLAP_LOGO2.png',
+    'IMG/LOGOS/logo_olap.png',
+    'IMG/LOGOS/OLAP_LOGO2.png',
+    'IMG/logos/OLAP_LOGO2.png'
+], 'IMG/OLAP_LOGO2.png');
+
+$cheminLogoMaif = trouverLogoCarte([
+    'IMG/Logo_Maif_2019.svg.webp',
+    'IMG/LOGOS/logo_maif.png',
+    'IMG/LOGOS/Logo_Maif_2019.svg.webp',
+    'IMG/logos/Logo_Maif_2019.svg.webp'
+], 'IMG/Logo_Maif_2019.svg.webp');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -87,7 +108,7 @@ foreach ($emplacementsLogos as $testLogo) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title"><?= htmlspecialchars($titrePdf) ?></title>
     <link rel="icon" type="image/png" href="IMG/favicon.png">
-    <link rel="stylesheet" href="CSS/admin_cartes.css?v=8">
+    <link rel="stylesheet" href="CSS/admin_cartes.css?v=9">
 </head>
 <body>
 
@@ -146,6 +167,7 @@ foreach ($emplacementsLogos as $testLogo) {
             <?php foreach ($adherents as $m): ?>
                 <?php
                     $dateNaissFr   = !empty($m['date_naissance']) ? formaterDate($m['date_naissance']) : '';
+                    // Ajout automatique de +5 ans aux dates d'obtention UAS et Formation télépilote
                     $dateValUasFr  = !empty($m['date_val_uas']) ? date('d/m/Y', strtotime($m['date_val_uas'] . ' +5 years')) : '';
                     $dateFormFr    = !empty($m['date_formation']) ? date('d/m/Y', strtotime($m['date_formation'] . ' +5 years')) : '';
                     $numUasAffiche = !empty($m['num_uas']) ? $m['num_uas'] : 'FRA';
@@ -154,6 +176,7 @@ foreach ($emplacementsLogos as $testLogo) {
                     <!-- VOLET GAUCHE : RECTO DE LA CARTE ADHÉRENT -->
                     <div class="card-left">
                         <div class="card-left-body">
+                            <!-- Colonne gauche : Logo du club en haut + Prénom / NOM en bas -->
                             <div class="col-logo-name">
                                 <img src="<?= htmlspecialchars($cheminLogoClub) ?>" alt="Logo Les Kamikazes Agathois" class="card-club-logo">
                                 <div class="card-member-names">
@@ -162,17 +185,19 @@ foreach ($emplacementsLogos as $testLogo) {
                                 </div>
                             </div>
 
+                            <!-- Colonne centrale : Textes officiels du club -->
                             <div class="col-club-details">
                                 <div class="txt-saison">Saison <span class="saison-value"><?= htmlspecialchars($saison) ?></span></div>
-                                <div class="txt-club-full">Club d'Aéromodélisme d'Agde</div>
+                                <div class="txt-club-full">Club d'aéromodélisme les Kamikazes Agathois</div>
                                 <div class="txt-affiliation">Affiliation OLAP</div>
-                                <div class="txt-smac-red">LES KAMIKAZES AGATHOIS</div>
-                                <div class="txt-club-city">34300 Agde</div>
+                                <div class="txt-club-red">LES KAMIKAZES AGATHOIS</div>
+                                <div class="txt-club-city">34300 AGDE</div>
                                 <div class="txt-birth">
                                     Né(e) le <?= htmlspecialchars($dateNaissFr) ?>
                                 </div>
                             </div>
 
+                            <!-- Photo d'identité du membre en bas à droite -->
                             <div class="col-photo">
                                 <img src="<?= htmlspecialchars($m['photo_url']) ?>" alt="Photo <?= htmlspecialchars($m['prenom']) ?>" class="member-id-photo">
                             </div>
@@ -186,20 +211,30 @@ foreach ($emplacementsLogos as $testLogo) {
                         </div>
                     </div>
 
-                    <!-- VOLET DROIT : INFORMATIONS UAS, TÉLÉPILOTE & ASSURANCE -->
+                    <!-- VOLET DROIT : LOGO OLAP, INFOS UAS, TÉLÉPILOTE & ASSURANCE MAIF -->
                     <div class="card-right">
-                        <div class="uas-line">
-                            N° UAS : <strong><?= htmlspecialchars($numUasAffiche) ?></strong>
+                        <div class="card-right-top">
+                            <img src="<?= htmlspecialchars($cheminLogoOlap) ?>" alt="Logo OLAP" class="card-olap-logo">
                         </div>
-                        <div class="uas-line">
-                            Valable jusqu'au <?= htmlspecialchars($dateValUasFr) ?>
+
+                        <div class="card-right-middle">
+                            <div class="uas-line">
+                                N° UAS : <strong><?= htmlspecialchars($numUasAffiche) ?></strong>
+                            </div>
+                            <div class="uas-line">
+                                Valable jusqu'au <?= htmlspecialchars($dateValUasFr) ?>
+                            </div>
+                            <div class="telepilote-block">
+                                <span>Formation télépilote</span>
+                                <span>Valable jusqu'au <?= htmlspecialchars($dateFormFr) ?></span>
+                            </div>
                         </div>
-                        <div class="telepilote-block">
-                            <span>Formation télépilote</span>
-                            <span>Valable jusqu'au <?= htmlspecialchars($dateFormFr) ?></span>
-                        </div>
-                        <div class="assurance-line">
-                            Assurance : OLAP (N° police à compléter)
+
+                        <div class="card-right-bottom">
+                            <div class="assurance-line">
+                                Assurance : MAIF N° 0 906 026 T
+                            </div>
+                            <img src="<?= htmlspecialchars($cheminLogoMaif) ?>" alt="Logo MAIF" class="card-maif-logo">
                         </div>
                     </div>
                 </div>
@@ -207,6 +242,7 @@ foreach ($emplacementsLogos as $testLogo) {
         </div>
     <?php endif; ?>
 
+    <!-- SCRIPT CENTRALISÉ DANS LE DOSSIER JS -->
     <script src="JS/main.js?v=4"></script>
 
 </body>
