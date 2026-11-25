@@ -215,18 +215,18 @@ body {
 
 .card-left-body {
     position: relative;
-    padding: 2mm 2.5mm 1mm 2.5mm;
+    padding: 1.8mm 2.5mm 1mm 2.5mm;
     flex: 1;
     background: #ffffff;
 }
 
-/* Colonne gauche : Logo du club sur fond blanc + Prénom / NOM en bas */
+/* Colonne gauche : Logo du club agrandi sur fond blanc + Prénom / NOM en bas */
 .col-logo-name {
     position: absolute;
-    left: 2.5mm;
-    top: 2.2mm;
+    left: 1.8mm;
+    top: 1.5mm;
     bottom: 1mm;
-    width: 22mm;
+    width: 26mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -234,8 +234,8 @@ body {
 }
 
 .card-club-logo {
-    width: 21.5mm;
-    height: 14.5mm;
+    width: 25.5mm;
+    height: 20.5mm;
     object-fit: contain;
     background: #ffffff;
     display: block;
@@ -272,10 +272,10 @@ body {
 
 /* Bloc central : Textes officiels alignés comme le modèle PDF */
 .col-club-details {
-    margin-left: 24mm;
+    margin-left: 26.5mm;
     display: flex;
     flex-direction: column;
-    gap: 0.8mm;
+    gap: 0.75mm;
     position: relative;
     z-index: 2;
 }
@@ -285,13 +285,13 @@ body {
     font-weight: bold;
     color: #0070C0;
     text-align: center;
-    width: 56mm;
-    margin-bottom: 0.4mm;
+    width: 54mm;
+    margin-bottom: 0.35mm;
     white-space: nowrap;
 }
 
 .txt-club-full {
-    font-size: 7.4pt;
+    font-size: 7.3pt;
     font-weight: bold;
     color: #555555;
     line-height: 1.15;
@@ -300,22 +300,22 @@ body {
 }
 
 .txt-affiliation {
-    font-size: 7.6pt;
+    font-size: 7.5pt;
     color: #111111;
     white-space: nowrap;
 }
 
 .txt-club-red {
-    font-size: 9.8pt;
+    font-size: 9.6pt;
     font-weight: bold;
     color: #FF0000;
-    margin-top: 0.3mm;
+    margin-top: 0.25mm;
     white-space: nowrap;
     letter-spacing: -0.1px;
 }
 
 .txt-club-city {
-    font-size: 9.2pt;
+    font-size: 9pt;
     color: #444444;
     margin-top: 0.2mm;
     white-space: nowrap;
@@ -324,25 +324,25 @@ body {
 .txt-birth {
     font-size: 7.6pt;
     color: #333333;
-    margin-top: 0.8mm;
+    margin-top: 0.7mm;
     white-space: nowrap;
 }
 
 /* Photo d'identité positionnée en bas à droite (sous le nom rouge du club) */
 .col-photo {
     position: absolute;
-    right: 2.8mm;
+    right: 2.5mm;
     bottom: 1.4mm;
     z-index: 1;
 }
 
 .member-id-photo {
-    width: 17.5mm;
-    height: 20.5mm;
-    min-width: 17.5mm;
-    max-width: 17.5mm;
-    min-height: 20.5mm;
-    max-height: 20.5mm;
+    width: 18mm;
+    height: 21mm;
+    min-width: 18mm;
+    max-width: 18mm;
+    min-height: 21mm;
+    max-height: 21mm;
     object-fit: cover;
     border: 1px solid #333333;
     background: #f4f4f4;
@@ -357,7 +357,7 @@ body {
     min-height: 7.2mm;
     display: flex;
     align-items: center;
-    padding: 0 3mm 0 26.5mm;
+    padding: 0 3mm 0 28.5mm;
 }
 
 .txt-licence-bottom {
@@ -377,11 +377,11 @@ body {
     flex-shrink: 0;
     border: 1px solid #bbbbbb;
     border-left: none;
-    padding: 2mm 3.5mm 1.8mm 4mm;
+    padding: 1.5mm 3.5mm 1.5mm 4mm;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-size: 8pt;
+    font-size: 7.8pt;
     color: #111111;
     background: #ffffff;
     overflow: hidden;
@@ -394,9 +394,9 @@ body {
 }
 
 .card-olap-logo {
-    height: 11.5mm;
+    height: 17mm;
     width: auto;
-    max-width: 26mm;
+    max-width: 36mm;
     object-fit: contain;
     display: block;
 }
@@ -404,8 +404,8 @@ body {
 .card-right-middle {
     display: flex;
     flex-direction: column;
-    gap: 0.9mm;
-    line-height: 1.2;
+    gap: 0.6mm;
+    line-height: 1.18;
 }
 
 .uas-line {
@@ -419,8 +419,8 @@ body {
 .telepilote-block {
     display: flex;
     flex-direction: column;
-    gap: 0.5mm;
-    margin-top: 0.8mm;
+    gap: 0.4mm;
+    margin-top: 0.6mm;
     white-space: nowrap;
 }
 
@@ -428,18 +428,18 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1mm;
+    gap: 0.8mm;
 }
 
 .assurance-line {
-    font-size: 8pt;
+    font-size: 7.8pt;
     white-space: nowrap;
 }
 
 .card-maif-logo {
-    height: 8.2mm;
+    height: 12.5mm;
     width: auto;
-    max-width: 22mm;
+    max-width: 32mm;
     object-fit: contain;
     background: #ffffff;
     display: block;
